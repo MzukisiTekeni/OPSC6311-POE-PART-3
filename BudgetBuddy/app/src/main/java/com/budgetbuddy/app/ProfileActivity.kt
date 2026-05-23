@@ -7,6 +7,7 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.budgetbuddy.app.db.BadgeKeys
 import com.budgetbuddy.app.db.BudgetRepository
 import com.budgetbuddy.app.db.SessionManager
 import kotlinx.coroutines.launch
@@ -15,6 +16,26 @@ class ProfileActivity : AppCompatActivity() {
 
     private lateinit var repo: BudgetRepository
     private var userId = -1
+
+    // ── Theme XP thresholds ───────────────────────────────────────────────────
+    private val THEME_XP_OCEAN     = 500
+    private val THEME_XP_MIDNIGHT  = 2000
+    private val THEME_XP_AMBER     = 3500
+    private val THEME_XP_VIOLET    = 5000
+
+    // ── Badge view IDs ────────────────────────────────────────────────────────
+    // Maps each BadgeKey → Pair(circleFrameLayoutId, labelTextViewId)
+    private val badgeViewMap = mapOf(
+        BadgeKeys.FIRST_BUDGET     to Pair(R.id.badge_circle_first_budget,     R.id.badge_lbl_first_budget),
+        BadgeKeys.STREAK_7         to Pair(R.id.badge_circle_streak_7,         R.id.badge_lbl_streak_7),
+        BadgeKeys.FIRST_SAVER      to Pair(R.id.badge_circle_first_saver,      R.id.badge_lbl_first_saver),
+        BadgeKeys.STREAK_30        to Pair(R.id.badge_circle_streak_30,        R.id.badge_lbl_streak_30),
+        BadgeKeys.ALL_GOALS        to Pair(R.id.badge_circle_all_goals,        R.id.badge_lbl_all_goals),
+        BadgeKeys.BUDGET_MASTER    to Pair(R.id.badge_circle_budget_master,    R.id.badge_lbl_budget_master),
+        BadgeKeys.NO_SPEND_DAY     to Pair(R.id.badge_circle_no_spend_day,     R.id.badge_lbl_no_spend_day),
+        BadgeKeys.GOAL_CRUSHER     to Pair(R.id.badge_circle_goal_crusher,     R.id.badge_lbl_goal_crusher),
+        BadgeKeys.CONSISTENT_SAVER to Pair(R.id.badge_circle_consistent_saver, R.id.badge_lbl_consistent_saver)
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,9 +46,7 @@ class ProfileActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tv_bar_title).text = "Profile"
         findViewById<ImageView>(R.id.iv_back).setOnClickListener { finish() }
 
-        // ── Live unread-notification badge on the bell icon ───────────────────
-        // This badge (tv_notif_badge) must sit on top of the bell ImageView in
-        // your top bar layout (component_simple_top_bar or wherever the bell lives).
+        // ── Live unread-notification badge ────────────────────────────────────
         repo.countUnread(userId).observe(this) { unread ->
             val badge = findViewById<TextView?>(R.id.tv_notif_badge)
             badge?.let {
@@ -56,12 +75,31 @@ class ProfileActivity : AppCompatActivity() {
                 "R${"%,.0f".format(user.totalSaved)}"
             findViewById<TextView>(R.id.tv_total_saved).text = savedStr
 
+            // XP progress bar
             val maxXp    = user.level * 2000
             val progress = ((user.totalXp.toFloat() / maxXp) * 100).toInt().coerceIn(0, 100)
             findViewById<ProgressBar>(R.id.progress_xp).apply {
                 max           = 100
                 this.progress = progress
             }
+
+            // XP fraction label  e.g.  "1,340 / 2,000 XP"
+            findViewById<TextView>(R.id.tv_xp_fraction).text =
+                "%,d / %,d XP".format(user.totalXp, maxXp)
+
+            // XP level title  e.g. "Level 6 · Budget Pro"
+            val levelTitle = "Level ${user.level} · ${levelName(user.level)}"
+            findViewById<TextView>(R.id.tv_xp_level_title).text = levelTitle
+
+            // XP hint below the bar  e.g.  "660 XP to Level 7 · Midnight theme"
+            val xpToNext    = (maxXp - user.totalXp).coerceAtLeast(0)
+            val nextUnlock  = nextThemeUnlock(user.totalXp)
+            val hintSuffix  = if (nextUnlock != null) " · ${nextUnlock.first}" else ""
+            findViewById<TextView>(R.id.tv_xp_hint).text =
+                "$xpToNext XP to Level ${user.level + 1}$hintSuffix"
+
+            // Update themes panel whenever XP changes
+            updateThemesPanel(user.totalXp)
         }
 
         // ── Total saved from goals ────────────────────────────────────────────
@@ -73,20 +111,16 @@ class ProfileActivity : AppCompatActivity() {
         setEarnRow(R.id.row_complete_goal, "🎯", "Complete a savings goal", "+200 XP")
 
         // ── Tab switching ─────────────────────────────────────────────────────
-        fun selectTab(tab: String) {
-            listOf(R.id.tab_xp to "XP", R.id.tab_badges to "Badges", R.id.tab_themes to "Themes")
-                .forEach { (id, label) ->
-                    findViewById<TextView>(id).apply {
-                        setBackgroundResource(if (label == tab) R.drawable.bg_chip_selected else R.drawable.bg_chip_unselected)
-                        setTextColor(if (label == tab) getColor(R.color.text_on_primary) else getColor(R.color.text_secondary))
-                    }
-                }
-            findViewById<View>(R.id.panel_xp).visibility = if (tab == "XP") View.VISIBLE else View.GONE
-        }
         selectTab("XP")
         findViewById<TextView>(R.id.tab_xp).setOnClickListener     { selectTab("XP") }
         findViewById<TextView>(R.id.tab_badges).setOnClickListener  { selectTab("Badges") }
         findViewById<TextView>(R.id.tab_themes).setOnClickListener  { selectTab("Themes") }
+
+        // ── Observe earned badges ─────────────────────────────────────────────
+        repo.getEarnedBadges(userId).observe(this) { badges ->
+            val earned = badges.map { it.badgeKey }.toSet()
+            updateBadgesPanel(earned)
+        }
 
         // ── Settings rows ─────────────────────────────────────────────────────
         setSettingsRow(R.id.row_notifications, "Notifications", showToggle = true, toggleOn = true)
@@ -95,10 +129,8 @@ class ProfileActivity : AppCompatActivity() {
             Toast.makeText(this, "Privacy settings coming soon", Toast.LENGTH_SHORT).show()
         }
 
-        // ── Clear Data row ────────────────────────────────────────────────────
         setSettingsRow(R.id.row_clear_data, "Clear Data") { showClearDataDialog() }
 
-        // ── Sign out ──────────────────────────────────────────────────────────
         setSettingsRow(R.id.row_signout, "Sign out") {
             SessionManager.clearSession(this)
             val intent = Intent(this, WelcomeActivity::class.java)
@@ -107,19 +139,135 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    // ── Clear Data dialog ─────────────────────────────────────────────────────
+    // ── Tab logic ─────────────────────────────────────────────────────────────
+
+    private fun selectTab(tab: String) {
+        // Update chip styles
+        listOf(R.id.tab_xp to "XP", R.id.tab_badges to "Badges", R.id.tab_themes to "Themes")
+            .forEach { (id, label) ->
+                findViewById<TextView>(id).apply {
+                    setBackgroundResource(
+                        if (label == tab) R.drawable.bg_chip_selected else R.drawable.bg_chip_unselected
+                    )
+                    setTextColor(
+                        if (label == tab) getColor(R.color.text_on_primary)
+                        else              getColor(R.color.text_secondary)
+                    )
+                }
+            }
+        // Show/hide panels
+        findViewById<View>(R.id.panel_xp).visibility     = if (tab == "XP")     View.VISIBLE else View.GONE
+        findViewById<View>(R.id.panel_badges).visibility = if (tab == "Badges") View.VISIBLE else View.GONE
+        findViewById<View>(R.id.panel_themes).visibility = if (tab == "Themes") View.VISIBLE else View.GONE
+    }
+
+    // ── Badges panel ─────────────────────────────────────────────────────────
+
     /**
-     * Shows a multi-choice dialog so the user can pick exactly which data to wipe.
-     * Clearing expenses also refreshes Budget Health and Statistics automatically
-     * because both screens observe LiveData from the same expense table.
-     *
-     * Options:
-     *   0 → Expenses & spending history  (also affects Statistics graph + Budget Health)
-     *   1 → Category budgets
-     *   2 → Savings goals
-     *   3 → Notifications
-     *   4 → Overall monthly budget (SharedPreferences)
+     * For each badge: if earned → show full colour + green label.
+     * If not earned → apply greyscale alpha overlay.
      */
+    private fun updateBadgesPanel(earned: Set<String>) {
+        var earnedCount = 0
+
+        for ((key, ids) in badgeViewMap) {
+            val (circleId, labelId) = ids
+            val circle = findViewById<FrameLayout>(circleId)
+            val label  = findViewById<TextView>(labelId)
+
+            if (key in earned) {
+                earnedCount++
+                // Full colour — restore alpha and no colour filter
+                circle.alpha = 1f
+                circle.colorFilter = null
+                label.setTextColor(getColor(R.color.primary))
+                label.alpha = 1f
+            } else {
+                // Locked — dim with greyscale effect
+                circle.alpha = 0.38f
+                label.setTextColor(getColor(R.color.text_hint))
+                label.alpha = 0.5f
+            }
+        }
+
+        // Update count label
+        val allBadges = badgeViewMap.size
+        findViewById<TextView>(R.id.tv_badge_count).text =
+            "$earnedCount of $allBadges badges earned"
+    }
+
+    // ── Themes panel ─────────────────────────────────────────────────────────
+
+    private data class ThemeInfo(
+        val name: String,
+        val xpRequired: Int,
+        val containerId: Int,
+        val subLabelId: Int
+    )
+
+    private val themes = listOf(
+        ThemeInfo("Forest",   0,                R.id.theme_forest,   R.id.theme_sub_forest),
+        ThemeInfo("Ocean",    THEME_XP_OCEAN,   R.id.theme_ocean,    R.id.theme_sub_ocean),
+        ThemeInfo("Midnight", THEME_XP_MIDNIGHT,R.id.theme_midnight, R.id.theme_sub_midnight),
+        ThemeInfo("Violet",   THEME_XP_VIOLET,  R.id.theme_violet,   R.id.theme_sub_violet),
+        ThemeInfo("Amber",    THEME_XP_AMBER,   R.id.theme_amber,    R.id.theme_sub_amber)
+    )
+
+    private fun updateThemesPanel(totalXp: Int) {
+        for (theme in themes) {
+            val container = findViewById<LinearLayout>(theme.containerId)
+            val subLabel  = findViewById<TextView>(theme.subLabelId)
+
+            if (totalXp >= theme.xpRequired) {
+                // Unlocked
+                container.alpha = 1f
+                if (theme.xpRequired == 0) {
+                    subLabel.text = "Active"
+                    subLabel.setTextColor(getColor(R.color.primary))
+                } else {
+                    subLabel.text = "Unlocked"
+                    subLabel.setTextColor(getColor(R.color.primary))
+                }
+            } else {
+                // Locked
+                container.alpha = 0.38f
+                // Keep the existing XP label text — it was set in the layout
+            }
+        }
+
+        // Update the nudge hint in the themes panel
+        val next = nextThemeUnlock(totalXp)
+        val hint = if (next != null) {
+            val xpNeeded = next.second - totalXp
+            "⭐ ${"$xpNeeded XP"} away from ${next.first} — keep logging expenses!"
+        } else {
+            "🎉 All themes unlocked! You're a Budget Legend."
+        }
+        findViewById<TextView>(R.id.tv_theme_xp_hint).text = hint
+    }
+
+    /** Returns the (name, xpRequired) of the next locked theme, or null if all unlocked. */
+    private fun nextThemeUnlock(totalXp: Int): Pair<String, Int>? {
+        return themes
+            .filter { it.xpRequired > 0 && totalXp < it.xpRequired }
+            .minByOrNull { it.xpRequired }
+            ?.let { Pair(it.name, it.xpRequired) }
+    }
+
+    /** Human-readable level name at given level number. */
+    private fun levelName(level: Int): String = when {
+        level <= 1  -> "Starter"
+        level <= 2  -> "Saver"
+        level <= 3  -> "Planner"
+        level <= 4  -> "Tracker"
+        level <= 5  -> "Budget Pro"
+        level <= 7  -> "Finance Ace"
+        level <= 10 -> "Money Master"
+        else        -> "Budget Legend"
+    }
+
+    // ── Clear Data dialog ─────────────────────────────────────────────────────
+
     private fun showClearDataDialog() {
         val view = layoutInflater.inflate(R.layout.dialog_clear_data, null)
 
@@ -174,30 +322,14 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun performClear(checked: BooleanArray) {
         lifecycleScope.launch {
-            val month = repo.currentMonth()
-
-            // 0 — Expenses (LiveData observers on Statistics + Budget Health update automatically)
-            if (checked[0]) {
-                repo.expenseDao.deleteAllForUser(userId)
-            }
-            // 1 — Category budgets
+            if (checked[0]) repo.expenseDao.deleteAllForUser(userId)
             if (checked[1]) {
                 repo.budgetDao.deleteAllForUser(userId)
-                // Also reset the SharedPreferences balance
                 repo.saveOverallBudget(this@ProfileActivity, userId, 0.0)
             }
-            // 2 — Savings goals
-            if (checked[2]) {
-                repo.savingsGoalDao.deleteAllForUser(userId)
-            }
-            // 3 — Notifications
-            if (checked[3]) {
-                repo.clearAllNotifications(userId)
-            }
-            // 4 — Overall budget (SharedPreferences)
-            if (checked[4]) {
-                repo.saveOverallBudget(this@ProfileActivity, userId, 0.0)
-            }
+            if (checked[2]) repo.savingsGoalDao.deleteAllForUser(userId)
+            if (checked[3]) repo.clearAllNotifications(userId)
+            if (checked[4]) repo.saveOverallBudget(this@ProfileActivity, userId, 0.0)
 
             runOnUiThread {
                 Toast.makeText(this@ProfileActivity, "Data cleared ✓", Toast.LENGTH_SHORT).show()
@@ -206,6 +338,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
+
     private fun setEarnRow(viewId: Int, icon: String, label: String, xp: String) {
         val row = findViewById<View>(viewId)
         row.findViewById<TextView>(R.id.tv_earn_icon).text  = icon

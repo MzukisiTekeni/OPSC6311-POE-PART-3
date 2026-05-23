@@ -244,25 +244,25 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginTop="12dp" android:weightSum="4">
                             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
-                                <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_badge_circle">
+                                <FrameLayout android:id="@+id/dash_badge_first_budget" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_badge_circle">
                                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:text="🏆" android:textSize="20sp"/>
                                 </FrameLayout>
                                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="First budget" android:textSize="9sp" android:textColor="@color/text_secondary" android:gravity="center"/>
                             </LinearLayout>
                             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
-                                <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_streak_badge">
+                                <FrameLayout android:id="@+id/dash_badge_streak_7" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_streak_badge">
                                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:text="🔥" android:textSize="20sp"/>
                                 </FrameLayout>
                                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="7-day streak" android:textSize="9sp" android:textColor="@color/text_secondary" android:gravity="center"/>
                             </LinearLayout>
                             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
-                                <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_xp_badge">
+                                <FrameLayout android:id="@+id/dash_badge_first_saver" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_xp_badge">
                                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:text="💰" android:textSize="20sp"/>
                                 </FrameLayout>
-                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Saver" android:textSize="9sp" android:textColor="@color/text_secondary" android:gravity="center"/>
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="First saver" android:textSize="9sp" android:textColor="@color/text_secondary" android:gravity="center"/>
                             </LinearLayout>
                             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
-                                <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_goal_circle">
+                                <FrameLayout android:id="@+id/dash_badge_all_goals" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_goal_circle">
                                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:text="⭐" android:textSize="20sp"/>
                                 </FrameLayout>
                                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="All goals met" android:textSize="9sp" android:textColor="@color/text_secondary" android:gravity="center"/>

@@ -4,17 +4,24 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
+import com.budgetbuddy.app.db.BadgeKeys
 import com.budgetbuddy.app.db.BudgetRepository
 import com.budgetbuddy.app.db.SessionManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var repo: BudgetRepository
+
+    // Maps each dashboard badge FrameLayout id → its BadgeKey
+    private val dashboardBadgeMap = mapOf(
+        R.id.dash_badge_first_budget to BadgeKeys.FIRST_BUDGET,
+        R.id.dash_badge_streak_7     to BadgeKeys.STREAK_7,
+        R.id.dash_badge_first_saver  to BadgeKeys.FIRST_SAVER,
+        R.id.dash_badge_all_goals    to BadgeKeys.ALL_GOALS
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +46,7 @@ class DashboardActivity : AppCompatActivity() {
             // XP
             val xpToNext = ((user.level * 2000) - user.totalXp).coerceAtLeast(0)
             findViewById<TextView>(R.id.tv_xp_count).text =
-                "${"%,d".format(user.totalXp)} of ${user.level * 2000} XP"
+                "${ "%,d".format(user.totalXp)} of ${user.level * 2000} XP"
             findViewById<TextView>(R.id.tv_xp_hint).text =
                 "$xpToNext XP to unlock next theme"
             findViewById<ProgressBar>(R.id.progress_xp).apply {
@@ -75,6 +82,19 @@ class DashboardActivity : AppCompatActivity() {
             val total   = goals.size
             findViewById<TextView>(R.id.tv_goals_count).text = "$onTrack/$total"
         }
+
+        // ── Achievements badges — show real earned/locked state ───────────────
+        repo.getEarnedBadges(userId).observe(this) { badges ->
+            val earnedKeys = badges.map { it.badgeKey }.toSet()
+            for ((frameId, badgeKey) in dashboardBadgeMap) {
+                val frame = findViewById<FrameLayout?>(frameId) ?: continue
+                if (badgeKey in earnedKeys) {
+                    frame.alpha = 1f
+                } else {
+                    frame.alpha = 0.30f
+                }
+            }
+        }
     }
 
     // ── Bottom Nav ────────────────────────────────────────────────────────────
@@ -101,7 +121,7 @@ class DashboardActivity : AppCompatActivity() {
         findViewById<FrameLayout>(R.id.fl_avatar).setOnClickListener      { start(ProfileActivity::class.java) }
         findViewById<Button>(R.id.btn_view_budget).setOnClickListener      { start(MonthlyBudgetActivity::class.java) }
         findViewById<TextView>(R.id.btn_view_profile).setOnClickListener   { start(ProfileActivity::class.java) }
-        findViewById<TextView>(R.id.btn_view_profile1).setOnClickListener   { start(ProfileActivity::class.java) }
+        findViewById<TextView>(R.id.btn_view_profile1).setOnClickListener  { start(ProfileActivity::class.java) }
         findViewById<LinearLayout>(R.id.action_add_categories).setOnClickListener { start(ExpenseCategoriesActivity::class.java) }
         findViewById<LinearLayout>(R.id.action_set_budget).setOnClickListener     { start(MonthlyBudgetActivity::class.java) }
         findViewById<LinearLayout>(R.id.action_add_expense).setOnClickListener    { start(AddExpenseActivity::class.java) }

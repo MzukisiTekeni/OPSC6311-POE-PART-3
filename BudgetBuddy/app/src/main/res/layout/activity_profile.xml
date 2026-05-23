@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    activity_profile.xml — unchanged except for:
-    1. tv_notif_badge added over the bell icon in the top bar area (if you have one)
-    2. row_clear_data settings row added between Privacy and Sign out
+    activity_profile.xml
+    Updated to include working Badges tab panel and Themes tab panel,
+    matching the HTML mockup design exactly.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -174,6 +174,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/spacing_base">
 
+                    <!-- Tab row -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -202,6 +203,7 @@
                             android:clickable="true" android:focusable="true" />
                     </LinearLayout>
 
+                    <!-- ══════════════════════════ XP PANEL ══════════════════════════ -->
                     <LinearLayout
                         android:id="@+id/panel_xp"
                         android:layout_width="match_parent"
@@ -209,39 +211,61 @@
                         android:orientation="vertical"
                         android:layout_marginTop="@dimen/spacing_base">
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/label_level"
-                            android:textSize="@dimen/text_sm" android:textColor="@color/text_primary"
-                            android:fontFamily="sans-serif-medium" android:textStyle="bold" />
+                        <!-- XP level title row -->
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="6dp">
+                            <TextView
+                                android:id="@+id/tv_xp_level_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_level"
+                                android:textSize="@dimen/text_sm"
+                                android:textColor="@color/text_primary"
+                                android:fontFamily="sans-serif-medium"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent" />
+                            <TextView
+                                android:id="@+id/tv_xp_fraction"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0 / 2000 XP"
+                                android:textSize="@dimen/text_xs"
+                                android:textColor="@color/text_hint"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <ProgressBar
                             android:id="@+id/progress_xp"
                             style="@android:style/Widget.ProgressBar.Horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/progress_height_sm"
-                            android:layout_marginTop="@dimen/spacing_xs"
                             android:max="100" android:progress="0"
                             android:progressDrawable="@drawable/progress_bar_green" />
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/tv_xp_hint"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="@string/xp_progress_label"
-                                android:textSize="@dimen/text_xs" android:textColor="@color/text_hint"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="@string/xp_next_level"
-                                android:textSize="@dimen/text_xs" android:textColor="@color/text_hint"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
+                            android:layout_marginTop="3dp"
+                            android:text="@string/xp_next_level"
+                            android:textSize="@dimen/text_xs"
+                            android:textColor="@color/text_hint" />
+
+                        <!-- Divider -->
+                        <View android:layout_width="match_parent" android:layout_height="1dp"
+                            android:background="@color/divider_line"
+                            android:layout_marginTop="@dimen/spacing_base"
+                            android:layout_marginBottom="@dimen/spacing_sm" />
 
                         <TextView
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_base"
+                            android:layout_marginBottom="@dimen/spacing_sm"
                             android:text="@string/section_how_to_earn"
                             android:textSize="@dimen/text_sm" android:textColor="@color/text_hint" />
 
@@ -257,6 +281,402 @@
                             android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_xs" />
                     </LinearLayout>
+
+                    <!-- ═══════════════════════ BADGES PANEL ═══════════════════════ -->
+                    <LinearLayout
+                        android:id="@+id/panel_badges"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="@dimen/spacing_base"
+                        android:visibility="gone">
+
+                        <!-- Badge grid — 3 columns × 3 rows = 9 badges -->
+                        <GridLayout
+                            android:id="@+id/grid_badges"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:columnCount="3"
+                            android:rowCount="3"
+                            android:layout_marginBottom="@dimen/spacing_sm">
+
+                            <!-- Badge 1: First budget -->
+                            <LinearLayout
+                                android:id="@+id/badge_first_budget"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="6dp">
+                                <FrameLayout
+                                    android:id="@+id/badge_circle_first_budget"
+                                    android:layout_width="44dp" android:layout_height="44dp"
+                                    android:background="@drawable/bg_badge_circle">
+                                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                        android:layout_gravity="center" android:text="🏆" android:textSize="20sp"/>
+                                </FrameLayout>
+                                <TextView android:id="@+id/badge_lbl_first_budget"
+                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp" android:text="First budget"
+                                    android:textSize="9sp" android:textColor="@color/text_hint"
+                                    android:gravity="center" android:maxLines="2" />
+                            </LinearLayout>
+
+                            <!-- Badge 2: 7-day streak -->
+                            <LinearLayout
+                                android:id="@+id/badge_streak_7"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="6dp">
+                                <FrameLayout
+                                    android:id="@+id/badge_circle_streak_7"
+                                    android:layout_width="44dp" android:layout_height="44dp"
+                                    android:background="@drawable/bg_streak_badge">
+                                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                        android:layout_gravity="center" android:text="🔥" android:textSize="20sp"/>
+                                </FrameLayout>
+                                <TextView android:id="@+id/badge_lbl_streak_7"
+                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp" android:text="7-day streak"
+                                    android:textSize="9sp" android:textColor="@color/text_hint"
+                                    android:gravity="center" android:maxLines="2" />
+                            </LinearLayout>
+
+                            <!-- Badge 3: First saver -->
+                            <LinearLayout
+                                android:id="@+id/badge_first_saver"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="6dp">
+                                <FrameLayout
+                                    android:id="@+id/badge_circle_first_saver"
+                                    android:layout_width="44dp" android:layout_height="44dp"
+                                    android:background="@drawable/bg_xp_badge">
+                                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                        android:layout_gravity="center" android:text="💰" android:textSize="20sp"/>
+                                </FrameLayout>
+                                <TextView android:id="@+id/badge_lbl_first_saver"
+                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp" android:text="First saver"
+                                    android:textSize="9sp" android:textColor="@color/text_hint"
+                                    android:gravity="center" android:maxLines="2" />
+                            </LinearLayout>
+
+                            <!-- Badge 4: 30-day streak -->
+                            <LinearLayout
+                                android:id="@+id/badge_streak_30"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="6dp">
+                                <FrameLayout
+                                    android:id="@+id/badge_circle_streak_30"
+                                    android:layout_width="44dp" android:layout_height="44dp"
+                                    android:background="@drawable/bg_badge_circle">
+                                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                        android:layout_gravity="center" android:text="🎯" android:textSize="20sp"/>
+                                </FrameLayout>
+                                <TextView android:id="@+id/badge_lbl_streak_30"
+                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp" android:text="30-day streak"
+                                    android:textSize="9sp" android:textColor="@color/text_hint"
+                                    android:gravity="center" android:maxLines="2" />
+                            </LinearLayout>
+
+                            <!-- Badge 5: All goals -->
+                            <LinearLayout
+                                android:id="@+id/badge_all_goals"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="6dp">
+                                <FrameLayout
+                                    android:id="@+id/badge_circle_all_goals"
+                                    android:layout_width="44dp" android:layout_height="44dp"
+                                    android:background="@drawable/bg_goal_circle">
+                                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                        android:layout_gravity="center" android:text="⭐" android:textSize="20sp"/>
+                                </FrameLayout>
+                                <TextView android:id="@+id/badge_lbl_all_goals"
+                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp" android:text="All goals"
+                                    android:textSize="9sp" android:textColor="@color/text_hint"
+                                    android:gravity="center" android:maxLines="2" />
+                            </LinearLayout>
+
+                            <!-- Badge 6: Budget master -->
+                            <LinearLayout
+                                android:id="@+id/badge_budget_master"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="6dp">
+                                <FrameLayout
+                                    android:id="@+id/badge_circle_budget_master"
+                                    android:layout_width="44dp" android:layout_height="44dp"
+                                    android:background="@drawable/bg_badge_circle">
+                                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                        android:layout_gravity="center" android:text="📊" android:textSize="20sp"/>
+                                </FrameLayout>
+                                <TextView android:id="@+id/badge_lbl_budget_master"
+                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp" android:text="Budget master"
+                                    android:textSize="9sp" android:textColor="@color/text_hint"
+                                    android:gravity="center" android:maxLines="2" />
+                            </LinearLayout>
+
+                            <!-- Badge 7: No-spend day -->
+                            <LinearLayout
+                                android:id="@+id/badge_no_spend_day"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="6dp">
+                                <FrameLayout
+                                    android:id="@+id/badge_circle_no_spend_day"
+                                    android:layout_width="44dp" android:layout_height="44dp"
+                                    android:background="@drawable/bg_badge_circle">
+                                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                        android:layout_gravity="center" android:text="🏅" android:textSize="20sp"/>
+                                </FrameLayout>
+                                <TextView android:id="@+id/badge_lbl_no_spend_day"
+                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp" android:text="No-spend day"
+                                    android:textSize="9sp" android:textColor="@color/text_hint"
+                                    android:gravity="center" android:maxLines="2" />
+                            </LinearLayout>
+
+                            <!-- Badge 8: Goal crusher -->
+                            <LinearLayout
+                                android:id="@+id/badge_goal_crusher"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="6dp">
+                                <FrameLayout
+                                    android:id="@+id/badge_circle_goal_crusher"
+                                    android:layout_width="44dp" android:layout_height="44dp"
+                                    android:background="@drawable/bg_badge_circle">
+                                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                        android:layout_gravity="center" android:text="🚀" android:textSize="20sp"/>
+                                </FrameLayout>
+                                <TextView android:id="@+id/badge_lbl_goal_crusher"
+                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp" android:text="Goal crusher"
+                                    android:textSize="9sp" android:textColor="@color/text_hint"
+                                    android:gravity="center" android:maxLines="2" />
+                            </LinearLayout>
+
+                            <!-- Badge 9: Consistent saver -->
+                            <LinearLayout
+                                android:id="@+id/badge_consistent_saver"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="6dp">
+                                <FrameLayout
+                                    android:id="@+id/badge_circle_consistent_saver"
+                                    android:layout_width="44dp" android:layout_height="44dp"
+                                    android:background="@drawable/bg_badge_circle">
+                                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                        android:layout_gravity="center" android:text="💎" android:textSize="20sp"/>
+                                </FrameLayout>
+                                <TextView android:id="@+id/badge_lbl_consistent_saver"
+                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp" android:text="Consistent saver"
+                                    android:textSize="9sp" android:textColor="@color/text_hint"
+                                    android:gravity="center" android:maxLines="2" />
+                            </LinearLayout>
+
+                        </GridLayout>
+
+                        <!-- Badge count hint row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/surface_secondary"
+                            android:paddingStart="10dp" android:paddingEnd="10dp"
+                            android:paddingTop="8dp" android:paddingBottom="8dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+                            <TextView
+                                android:id="@+id/tv_badge_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0 of 9 badges earned"
+                                android:textSize="10sp"
+                                android:textColor="@color/text_secondary" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- ═══════════════════════ THEMES PANEL ══════════════════════ -->
+                    <LinearLayout
+                        android:id="@+id/panel_themes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="@dimen/spacing_base"
+                        android:visibility="gone">
+
+                        <!-- Theme swatches row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="5"
+                            android:layout_marginBottom="@dimen/spacing_sm">
+
+                            <!-- Forest (always active/unlocked) -->
+                            <LinearLayout
+                                android:id="@+id/theme_forest"
+                                android:layout_width="0dp" android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginEnd="3dp"
+                                android:background="@drawable/bg_card"
+                                android:paddingBottom="4dp">
+                                <View android:id="@+id/theme_bar_forest"
+                                    android:layout_width="match_parent" android:layout_height="28dp"
+                                    android:background="#2D6A4F"/>
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_marginTop="3dp"
+                                    android:text="Forest" android:textSize="9sp" android:textColor="@color/primary"
+                                    android:fontFamily="sans-serif-medium" />
+                                <TextView android:id="@+id/theme_sub_forest"
+                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:text="Active" android:textSize="8sp" android:textColor="@color/primary" />
+                            </LinearLayout>
+
+                            <!-- Ocean (unlocked at 500 XP) -->
+                            <LinearLayout
+                                android:id="@+id/theme_ocean"
+                                android:layout_width="0dp" android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginStart="3dp" android:layout_marginEnd="3dp"
+                                android:background="@drawable/bg_card"
+                                android:paddingBottom="4dp">
+                                <View android:id="@+id/theme_bar_ocean"
+                                    android:layout_width="match_parent" android:layout_height="28dp"
+                                    android:background="#185FA5"/>
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_marginTop="3dp"
+                                    android:text="Ocean" android:textSize="9sp" android:textColor="@color/text_secondary" />
+                                <TextView android:id="@+id/theme_sub_ocean"
+                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:text="500 XP" android:textSize="8sp" android:textColor="@color/text_hint" />
+                            </LinearLayout>
+
+                            <!-- Midnight (unlocked at 2000 XP) -->
+                            <LinearLayout
+                                android:id="@+id/theme_midnight"
+                                android:layout_width="0dp" android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginStart="3dp" android:layout_marginEnd="3dp"
+                                android:background="@drawable/bg_card"
+                                android:paddingBottom="4dp">
+                                <View android:id="@+id/theme_bar_midnight"
+                                    android:layout_width="match_parent" android:layout_height="28dp"
+                                    android:background="#1A1A2E"/>
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_marginTop="3dp"
+                                    android:text="Midnight" android:textSize="9sp" android:textColor="@color/text_secondary" />
+                                <TextView android:id="@+id/theme_sub_midnight"
+                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:text="2k XP" android:textSize="8sp" android:textColor="@color/text_hint" />
+                            </LinearLayout>
+
+                            <!-- Violet (unlocked at 5000 XP) -->
+                            <LinearLayout
+                                android:id="@+id/theme_violet"
+                                android:layout_width="0dp" android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginStart="3dp" android:layout_marginEnd="3dp"
+                                android:background="@drawable/bg_card"
+                                android:paddingBottom="4dp">
+                                <View android:id="@+id/theme_bar_violet"
+                                    android:layout_width="match_parent" android:layout_height="28dp"
+                                    android:background="#534AB7"/>
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_marginTop="3dp"
+                                    android:text="Violet" android:textSize="9sp" android:textColor="@color/text_secondary" />
+                                <TextView android:id="@+id/theme_sub_violet"
+                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:text="5k XP" android:textSize="8sp" android:textColor="@color/text_hint" />
+                            </LinearLayout>
+
+                            <!-- Amber (unlocked at 3500 XP) -->
+                            <LinearLayout
+                                android:id="@+id/theme_amber"
+                                android:layout_width="0dp" android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginStart="3dp"
+                                android:background="@drawable/bg_card"
+                                android:paddingBottom="4dp">
+                                <View android:id="@+id/theme_bar_amber"
+                                    android:layout_width="match_parent" android:layout_height="28dp"
+                                    android:background="#854F0B"/>
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_marginTop="3dp"
+                                    android:text="Amber" android:textSize="9sp" android:textColor="@color/text_secondary" />
+                                <TextView android:id="@+id/theme_sub_amber"
+                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:text="3.5k XP" android:textSize="8sp" android:textColor="@color/text_hint" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- XP nudge hint row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/accent_green_light"
+                            android:paddingStart="11dp" android:paddingEnd="11dp"
+                            android:paddingTop="9dp" android:paddingBottom="9dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+                            <TextView
+                                android:id="@+id/tv_theme_xp_hint"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Earn XP to unlock more themes!"
+                                android:textSize="10sp"
+                                android:textColor="@color/primary_dark"
+                                android:lineSpacingMultiplier="1.3" />
+                        </LinearLayout>
+                    </LinearLayout>
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

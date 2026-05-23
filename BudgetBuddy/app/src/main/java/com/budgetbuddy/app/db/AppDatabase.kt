@@ -12,9 +12,10 @@ import androidx.room.RoomDatabase
         ExpenseEntity::class,
         BudgetEntity::class,
         SavingsGoalEntity::class,
-        NotificationEntity::class
+        NotificationEntity::class,
+        BadgeEntity::class          // ← new
     ],
-    version = 2,          // ← bumped from 1 → 2 so Room drops and recreates all tables
+    version = 3,                    // ← bumped from 2 → 3
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -25,6 +26,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun budgetDao(): BudgetDao
     abstract fun savingsGoalDao(): SavingsGoalDao
     abstract fun notificationDao(): NotificationDao
+    abstract fun badgeDao(): BadgeDao              // ← new
 
     companion object {
         @Volatile
@@ -37,7 +39,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "budgetbuddy.db"
                 )
-                    .fallbackToDestructiveMigration()   // wipes old data, rebuilds cleanly
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

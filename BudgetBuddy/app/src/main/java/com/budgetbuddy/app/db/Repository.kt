@@ -20,6 +20,7 @@ class BudgetRepository(context: Context) {
     val budgetDao           = db.budgetDao()
     val savingsGoalDao      = db.savingsGoalDao()
     val notificationDao     = db.notificationDao()
+    val badgeDao            = db.badgeDao()
 
     fun currentMonth(): String = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"))
     fun today(): String        = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
@@ -46,10 +47,6 @@ class BudgetRepository(context: Context) {
         return if (user.passwordHash == hash) user else null
     }
 
-    /**
-     * Returns a LiveData for the currently logged-in user only.
-     * Uses the exact userId — NOT "LIMIT 1" — so switching accounts is safe.
-     */
     fun getLoggedInUser(userId: Int): LiveData<UserEntity?> = userDao.getUserById(userId)
 
     suspend fun addXp(userId: Int, xp: Int) {
@@ -67,6 +64,8 @@ class BudgetRepository(context: Context) {
             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         val newStreak = if (user.lastLoggedDate == yesterday) user.dayStreak + 1 else 1
         userDao.updateStreak(userId, newStreak, todayStr)
+        // Check streak badges after updating
+        checkStreakBadges(userId, newStreak)
     }
 
     // ── Categories ────────────────────────────────────────────────────────────
@@ -109,7 +108,7 @@ class BudgetRepository(context: Context) {
         receiptPath: String = ""
     ): Long {
         val month = date.substring(0, 7)
-        return expenseDao.insert(
+        val id = expenseDao.insert(
             ExpenseEntity(
                 userId        = userId,
                 amount        = amount,
@@ -122,6 +121,11 @@ class BudgetRepository(context: Context) {
                 receiptPath   = receiptPath
             )
         )
+        // Award XP for logging an expense
+        addXp(userId, 10)
+        // Update streak
+        updateStreak(userId)
+        return id
     }
 
     suspend fun deleteExpense(expense: ExpenseEntity) = expenseDao.delete(expense)
@@ -150,7 +154,7 @@ class BudgetRepository(context: Context) {
         month: String
     ): Long {
         budgetDao.deleteBudgetForCategory(userId, month, category.id)
-        return budgetDao.insert(
+        val id = budgetDao.insert(
             BudgetEntity(
                 userId        = userId,
                 categoryId    = category.id,
@@ -160,6 +164,9 @@ class BudgetRepository(context: Context) {
                 month         = month
             )
         )
+        // Award "First budget" badge when user sets their first budget
+        awardBadgeIfNew(userId, BadgeKeys.FIRST_BUDGET)
+        return id
     }
 
     // ── Overall budget balance (SharedPreferences, keyed by userId) ───────────
@@ -228,10 +235,23 @@ class BudgetRepository(context: Context) {
         )
     )
 
+    suspend fun addGoalContribution(goalId: Int, userId: Int, amount: Double) {
+        savingsGoalDao.addContribution(goalId, userId, amount)
+        // Award "First saver" badge when user makes their first contribution
+        awardBadgeIfNew(userId, BadgeKeys.FIRST_SAVER)
+        // Check if consistent saver (simplified: award after any 4+ contributions)
+        checkConsistentSaverBadge(userId)
+    }
+
     suspend fun completeGoal(goal: SavingsGoalEntity, userId: Int) {
         savingsGoalDao.markCompleted(goal.id, userId, today())
         userDao.addXp(userId, 200)
         userDao.addToTotalSaved(userId, goal.savedAmount)
+        // Check goal-related badges
+        val completed = savingsGoalDao.countCompletedNow(userId)
+        val active    = savingsGoalDao.countActiveNow(userId)
+        if (active == 0 && completed > 0) awardBadgeIfNew(userId, BadgeKeys.ALL_GOALS)
+        if (completed >= 3)               awardBadgeIfNew(userId, BadgeKeys.GOAL_CRUSHER)
     }
 
     // ── Notifications ─────────────────────────────────────────────────────────
@@ -267,4 +287,55 @@ class BudgetRepository(context: Context) {
 
     suspend fun clearAllNotifications(userId: Int) =
         notificationDao.deleteAll(userId)
+
+    // ── Badges ────────────────────────────────────────────────────────────────
+
+    fun getEarnedBadges(userId: Int): LiveData<List<BadgeEntity>> =
+        badgeDao.getAll(userId)
+
+    suspend fun getEarnedBadgeKeysNow(userId: Int): Set<String> =
+        badgeDao.getAllNow(userId).map { it.badgeKey }.toSet()
+
+    /**
+     * Inserts a badge only if the user doesn't already have it.
+     * Returns true if newly awarded.
+     */
+    suspend fun awardBadgeIfNew(userId: Int, badgeKey: String): Boolean {
+        if (badgeDao.hasBadge(userId, badgeKey) > 0) return false
+        badgeDao.insert(BadgeEntity(userId = userId, badgeKey = badgeKey))
+        return true
+    }
+
+    private suspend fun checkStreakBadges(userId: Int, streak: Int) {
+        if (streak >= 7)  awardBadgeIfNew(userId, BadgeKeys.STREAK_7)
+        if (streak >= 30) awardBadgeIfNew(userId, BadgeKeys.STREAK_30)
+    }
+
+    /**
+     * Award BUDGET_MASTER when the user has stayed within budget for a full month.
+     * Call this from MonthlyBudgetActivity or BudgetHealthActivity after computing
+     * whether the user was within budget this month.
+     */
+    suspend fun checkBudgetMasterBadge(userId: Int, withinBudget: Boolean) {
+        if (withinBudget) awardBadgeIfNew(userId, BadgeKeys.BUDGET_MASTER)
+    }
+
+    /**
+     * Award NO_SPEND_DAY when a full calendar day passes with zero expenses logged.
+     * Call this from wherever you explicitly want to reward no-spend days.
+     */
+    suspend fun checkNoSpendDayBadge(userId: Int) {
+        awardBadgeIfNew(userId, BadgeKeys.NO_SPEND_DAY)
+    }
+
+    private suspend fun checkConsistentSaverBadge(userId: Int) {
+        // Award after making contributions to 4 or more different goals total
+        val activeGoals = savingsGoalDao.countActiveNow(userId)
+        val completedGoals = savingsGoalDao.countCompletedNow(userId)
+        if (activeGoals + completedGoals >= 4) {
+            awardBadgeIfNew(userId, BadgeKeys.CONSISTENT_SAVER)
+        }
+    }
+
+    suspend fun clearBadges(userId: Int) = badgeDao.deleteAllForUser(userId)
 }

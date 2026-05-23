@@ -27,7 +27,6 @@ data class UserEntity(
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EXPENSE CATEGORY
-// Now scoped to a userId so each user has their own category list.
 // ─────────────────────────────────────────────────────────────────────────────
 @Entity(
     tableName = "expense_categories",
@@ -35,13 +34,13 @@ data class UserEntity(
         entity        = UserEntity::class,
         parentColumns = ["id"],
         childColumns  = ["userId"],
-        onDelete      = ForeignKey.CASCADE   // deleting user deletes their categories
+        onDelete      = ForeignKey.CASCADE
     )],
     indices = [Index("userId")]
 )
 data class ExpenseCategoryEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val userId: Int,                         // ← owner
+    val userId: Int,
     val name: String,
     val emoji: String,
     val isActive: Boolean = true
@@ -62,7 +61,7 @@ data class ExpenseCategoryEntity(
 )
 data class ExpenseEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val userId: Int,                         // ← owner
+    val userId: Int,
     val amount: Double,
     val description: String,
     val categoryId: Int,
@@ -89,7 +88,7 @@ data class ExpenseEntity(
 )
 data class BudgetEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val userId: Int,                         // ← owner
+    val userId: Int,
     val categoryId: Int,
     val categoryName: String,
     val categoryEmoji: String,
@@ -112,7 +111,7 @@ data class BudgetEntity(
 )
 data class SavingsGoalEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val userId: Int,                         // ← owner
+    val userId: Int,
     val name: String,
     val targetAmount: Double,
     val savedAmount: Double = 0.0,
@@ -140,7 +139,7 @@ data class SavingsGoalEntity(
 )
 data class NotificationEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val userId: Int,                         // ← owner
+    val userId: Int,
     val icon: String,
     val title: String,
     val body: String,
@@ -150,3 +149,40 @@ data class NotificationEntity(
     val isRead: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 )
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BADGE
+// Tracks which badges a user has earned.
+// badgeKey matches the string constants in BadgeKeys (e.g. "first_budget").
+// ─────────────────────────────────────────────────────────────────────────────
+@Entity(
+    tableName = "badges",
+    foreignKeys = [ForeignKey(
+        entity        = UserEntity::class,
+        parentColumns = ["id"],
+        childColumns  = ["userId"],
+        onDelete      = ForeignKey.CASCADE
+    )],
+    indices = [Index("userId"), Index(value = ["userId", "badgeKey"], unique = true)]
+)
+data class BadgeEntity(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val userId: Int,
+    val badgeKey: String,
+    val earnedAt: Long = System.currentTimeMillis()
+)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BADGE KEYS — single source of truth for badge identifiers
+// ─────────────────────────────────────────────────────────────────────────────
+object BadgeKeys {
+    const val FIRST_BUDGET    = "first_budget"    // Set first category budget
+    const val STREAK_7        = "streak_7"        // 7-day logging streak
+    const val FIRST_SAVER     = "first_saver"     // Make first savings goal contribution
+    const val STREAK_30       = "streak_30"       // 30-day logging streak
+    const val ALL_GOALS       = "all_goals"       // Complete all active savings goals
+    const val BUDGET_MASTER   = "budget_master"   // Stay within budget 3 months in a row
+    const val NO_SPEND_DAY    = "no_spend_day"    // Log no expenses for a full day (explicitly)
+    const val GOAL_CRUSHER    = "goal_crusher"    // Complete 3 savings goals total
+    const val CONSISTENT_SAVER = "consistent_saver" // Make contributions for 4 weeks in a row
+}

@@ -14,7 +14,6 @@ interface UserDao {
     @Update
     suspend fun updateUser(user: UserEntity)
 
-    // Fetch the currently logged-in user by their exact ID (from SessionManager)
     @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
     fun getUserById(id: Int): LiveData<UserEntity?>
 
@@ -44,7 +43,7 @@ interface UserDao {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// EXPENSE CATEGORY DAO  — all queries scoped to userId
+// EXPENSE CATEGORY DAO
 // ─────────────────────────────────────────────────────────────────────────────
 @Dao
 interface ExpenseCategoryDao {
@@ -72,13 +71,12 @@ interface ExpenseCategoryDao {
     @Query("SELECT COUNT(*) FROM expense_categories WHERE userId = :userId AND isActive = 1")
     suspend fun countActive(userId: Int): Int
 
-    // Wipe all categories for a user (called on new registration to clear stale data)
     @Query("DELETE FROM expense_categories WHERE userId = :userId")
     suspend fun deleteAllForUser(userId: Int)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// EXPENSE DAO  — all queries scoped to userId
+// EXPENSE DAO
 // ─────────────────────────────────────────────────────────────────────────────
 @Dao
 interface ExpenseDao {
@@ -160,7 +158,7 @@ data class DailyTotal(
 )
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BUDGET DAO  — all queries scoped to userId
+// BUDGET DAO
 // ─────────────────────────────────────────────────────────────────────────────
 @Dao
 interface BudgetDao {
@@ -196,7 +194,7 @@ interface BudgetDao {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SAVINGS GOAL DAO  — all queries scoped to userId
+// SAVINGS GOAL DAO
 // ─────────────────────────────────────────────────────────────────────────────
 @Dao
 interface SavingsGoalDao {
@@ -233,6 +231,12 @@ interface SavingsGoalDao {
     @Query("SELECT COUNT(*) FROM savings_goals WHERE userId = :userId AND isCompleted = 1")
     fun countCompleted(userId: Int): LiveData<Int>
 
+    @Query("SELECT COUNT(*) FROM savings_goals WHERE userId = :userId AND isCompleted = 1")
+    suspend fun countCompletedNow(userId: Int): Int
+
+    @Query("SELECT COUNT(*) FROM savings_goals WHERE userId = :userId AND isCompleted = 0")
+    suspend fun countActiveNow(userId: Int): Int
+
     @Query("UPDATE savings_goals SET savedAmount = savedAmount + :amount WHERE id = :goalId AND userId = :userId")
     suspend fun addContribution(goalId: Int, userId: Int, amount: Double)
 
@@ -244,7 +248,7 @@ interface SavingsGoalDao {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// NOTIFICATION DAO  — all queries scoped to userId
+// NOTIFICATION DAO
 // ─────────────────────────────────────────────────────────────────────────────
 @Dao
 interface NotificationDao {
@@ -271,4 +275,25 @@ interface NotificationDao {
 
     @Query("SELECT COUNT(*) FROM notifications WHERE userId = :userId AND isRead = 0")
     fun countUnread(userId: Int): LiveData<Int>
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BADGE DAO
+// ─────────────────────────────────────────────────────────────────────────────
+@Dao
+interface BadgeDao {
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(badge: BadgeEntity): Long
+
+    @Query("SELECT * FROM badges WHERE userId = :userId ORDER BY earnedAt ASC")
+    fun getAll(userId: Int): LiveData<List<BadgeEntity>>
+
+    @Query("SELECT * FROM badges WHERE userId = :userId ORDER BY earnedAt ASC")
+    suspend fun getAllNow(userId: Int): List<BadgeEntity>
+
+    @Query("SELECT COUNT(*) FROM badges WHERE userId = :userId AND badgeKey = :key")
+    suspend fun hasBadge(userId: Int, key: String): Int
+
+    @Query("DELETE FROM badges WHERE userId = :userId")
+    suspend fun deleteAllForUser(userId: Int)
 }
