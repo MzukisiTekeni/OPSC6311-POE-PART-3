@@ -14,8 +14,19 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
  * BaseThemedActivity
  * ─────────────────────────────────────────────────────────────────
  * All activities extend this.  On every onResume() the current
- * theme is re-applied so navigating back from ProfileActivity
- * picks up a newly chosen theme immediately.
+ * theme accent colour is re-applied so navigating back from
+ * ProfileActivity picks up a newly chosen theme immediately.
+ *
+ * Dark mode is handled entirely by the values-night/colors.xml
+ * resource qualifier (switched via AppCompatDelegate in
+ * DarkModeManager).  The accent colours from ThemeManager are
+ * applied on top of whatever surface colours the night qualifier
+ * provides, so every XP theme works perfectly in both light and
+ * dark mode.
+ *
+ * Navigation icons are NEVER tinted by the theme — their original
+ * multi-colour SVG artwork is preserved by setting itemIconTintList
+ * to null on the BottomNavigationView.
  */
 abstract class BaseThemedActivity : AppCompatActivity() {
 
@@ -34,8 +45,15 @@ abstract class BaseThemedActivity : AppCompatActivity() {
     /** TextViews whose text colour = primary */
     open fun themedTextViewIds(): List<Int> = emptyList()
 
-    /** ImageViews whose imageTint = primary */
+    /** ImageViews whose imageTint = primary (use for non-SVG icons only) */
     open fun themedImageViewIds(): List<Int> = emptyList()
+
+    /**
+     * ImageViews that use the theme accent as their tint.
+     * Same as themedImageViewIds() but semantically explicit —
+     * both lists are tinted with primary; subclasses may use either.
+     */
+    open fun themedIconViewIds(): List<Int> = emptyList()
 
     /** BottomNavigationView ID (0 = absent) */
     open fun bottomNavId(): Int = 0
@@ -44,8 +62,6 @@ abstract class BaseThemedActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Called on every resume so that coming back from ProfileActivity
-        // after a theme change re-colours this screen without recreating it.
         applyCurrentTheme()
     }
 
@@ -80,28 +96,40 @@ abstract class BaseThemedActivity : AppCompatActivity() {
             runCatching { ThemeManager.tintText(findViewById(id), primary) }
         }
 
-        // Image views
-        themedImageViewIds().forEach { id ->
+        // Image views tinted with accent (non-SVG icons, arrows, etc.)
+        (themedImageViewIds() + themedIconViewIds()).forEach { id ->
             runCatching { ThemeManager.tintImage(findViewById(id), primary) }
         }
 
         // ── Bottom Navigation ─────────────────────────────────────────────────
-        // We keep the icons' original drawable colours by setting a proper
-        // ColorStateList on itemIconTintList and itemTextColor.
-        // The UNSELECTED colour stays exactly as the original @color/nav_unselected.
+        // Original multi-colour SVG icons are preserved by setting
+        // itemIconTintList = null.  Only the label text uses the theme colour.
         val navId = bottomNavId()
         if (navId != 0) {
             runCatching {
                 val nav = findViewById<BottomNavigationView>(navId)
-                val unselected = 0xFF9CA3AF.toInt()  // @color/nav_unselected
+
+                // Preserve original SVG artwork — no icon tinting at all.
+                nav.itemIconTintList = null
+
+                // Labels: selected = theme primary, unselected = muted grey.
+                val unselectedColor = resolveColor(android.R.attr.textColorSecondary,
+                    0xFF9CA3AF.toInt())
                 val states = arrayOf(
                     intArrayOf(android.R.attr.state_checked),
                     intArrayOf(-android.R.attr.state_checked)
                 )
-                val csl = ColorStateList(states, intArrayOf(primary, unselected))
-                nav.itemIconTintList = csl
-                nav.itemTextColor    = csl
+                nav.itemTextColor = ColorStateList(states, intArrayOf(primary, unselectedColor))
             }
         }
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    private fun resolveColor(attr: Int, fallback: Int): Int {
+        val ta = obtainStyledAttributes(intArrayOf(attr))
+        val color = ta.getColor(0, fallback)
+        ta.recycle()
+        return color
     }
 }

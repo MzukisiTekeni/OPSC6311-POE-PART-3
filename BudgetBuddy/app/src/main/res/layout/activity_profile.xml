@@ -657,6 +657,58 @@
                             </LinearLayout>
                         </LinearLayout>
 
+                        <!-- ── Dark Mode toggle row ──────────────────────── -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="12dp" android:paddingEnd="12dp"
+                            android:paddingTop="12dp" android:paddingBottom="12dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/bg_card">
+
+                            <!-- Moon icon -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="🌙"
+                                android:textSize="18sp"
+                                android:layout_marginEnd="10dp" />
+
+                            <!-- Labels -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Dark Mode"
+                                    android:textSize="13sp"
+                                    android:textColor="@color/text_primary"
+                                    android:fontFamily="sans-serif-medium" />
+                                <TextView
+                                    android:id="@+id/tv_dark_mode_subtitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Dark surfaces with your chosen theme"
+                                    android:textSize="10sp"
+                                    android:textColor="@color/text_secondary"
+                                    android:layout_marginTop="1dp" />
+                            </LinearLayout>
+
+                            <!-- Toggle switch -->
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/switch_dark_mode"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="false"
+                                android:layout_marginStart="8dp" />
+
+                        </LinearLayout>
+
                         <!-- XP nudge hint row -->
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -665,7 +717,8 @@
                             android:paddingStart="11dp" android:paddingEnd="11dp"
                             android:paddingTop="9dp" android:paddingBottom="9dp"
                             android:orientation="horizontal"
-                            android:gravity="center_vertical">
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="8dp">
                             <TextView
                                 android:id="@+id/tv_theme_xp_hint"
                                 android:layout_width="wrap_content"

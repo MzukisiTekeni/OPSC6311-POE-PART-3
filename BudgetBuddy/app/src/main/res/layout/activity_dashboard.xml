@@ -91,6 +91,7 @@
                             <Button android:id="@+id/btn_view_budget"
                                 android:layout_width="wrap_content" android:layout_height="32dp"
                                 android:background="@drawable/bg_pill_button"
+                                app:backgroundTint="@null"
                                 android:text="View budget→" android:textColor="@color/text_on_primary" android:textSize="11sp"
                                 android:paddingStart="12dp" android:paddingEnd="12dp"
                                 app:layout_constraintEnd_toEndOf="parent"

@@ -144,8 +144,11 @@ class ViewExpensesActivity : BaseThemedActivity() {
                         setTextColor(getColor(R.color.text_secondary))
                     }
                 }
+                val primary = ThemeManager.getPalette(this).primary
                 findViewById<TextView>(id).apply {
                     setBackgroundResource(R.drawable.bg_chip_selected)
+                    // Tint the chip background with the active theme colour
+                    ThemeManager.tintBackground(this, primary)
                     setTextColor(getColor(R.color.text_on_primary))
                 }
                 // Reload expenses for the selected period
@@ -159,6 +162,14 @@ class ViewExpensesActivity : BaseThemedActivity() {
                 }
                 observeExpenses(month)
             }
+        }
+
+        // Apply theme to the initially-selected chip (Monthly)
+        val primary = ThemeManager.getPalette(this).primary
+        findViewById<TextView>(R.id.chip_monthly).apply {
+            setBackgroundResource(R.drawable.bg_chip_selected)
+            ThemeManager.tintBackground(this, primary)
+            setTextColor(getColor(R.color.text_on_primary))
         }
     }
 }

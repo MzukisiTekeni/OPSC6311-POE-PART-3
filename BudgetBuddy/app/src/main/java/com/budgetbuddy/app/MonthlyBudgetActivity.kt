@@ -51,7 +51,8 @@ class BudgetRowAdapter(
 // ── Activity ──────────────────────────────────────────────────────────────────
 class MonthlyBudgetActivity : BaseThemedActivity() {
 
-    override fun themedBackgroundViewIds() = listOf(R.id.btn_create_budget)
+    override fun themedBackgroundViewIds() = emptyList<Int>()
+    override fun themedImageViewIds()      = listOf(R.id.btn_create_budget)
     override fun themedCardViewIds()       = listOf(R.id.card_overall_budget)
 
 

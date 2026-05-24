@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.lifecycleScope
 import com.budgetbuddy.app.db.BadgeKeys
 import com.budgetbuddy.app.db.BudgetRepository
@@ -159,6 +160,17 @@ class ProfileActivity : BaseThemedActivity() {
 
         // ── Apply current theme colours ───────────────────────────────────────
         applyCurrentTheme()
+
+        // ── Dark Mode switch ──────────────────────────────────────────────────
+        val switchDark = findViewById<SwitchCompat>(R.id.switch_dark_mode)
+        switchDark.isChecked = DarkModeManager.isDarkMode(this)
+        switchDark.setOnCheckedChangeListener { _, isChecked ->
+            DarkModeManager.setDarkMode(this, isChecked)
+            // AppCompatDelegate.setDefaultNightMode() triggers a configuration
+            // change which recreates all activities automatically — no manual
+            // recreate() call needed. The user stays on the Themes tab because
+            // the back stack is preserved.
+        }
     }
 
     // ── Tab logic ─────────────────────────────────────────────────────────────

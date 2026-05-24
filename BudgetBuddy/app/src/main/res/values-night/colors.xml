@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    DARK MODE COLOR PALETTE
+    ════════════════════════════════════════════════════════════
+    These values override the light-mode colors when:
+      1. System night mode is active, OR
+      2. DarkModeManager.applyDarkMode() has been called (AppCompatDelegate.MODE_NIGHT_YES)
+
+    All accent/primary colors stay in ThemeManager (they are applied
+    programmatically and are NOT overridden here) so every XP theme
+    continues to work in dark mode unchanged.
+    ════════════════════════════════════════════════════════════
+-->
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Brand (unchanged - ThemeManager overrides dynamically) -->
+    <color name="primary">#2D6A4F</color>
+    <color name="primary_dark">#1B4332</color>
+    <color name="primary_light">#52B788</color>
+    <color name="accent_green">#74C69D</color>
+    <color name="accent_green_light">#1A3D2B</color>
+
+    <!-- Dark backgrounds — layered depth system -->
+    <color name="background">#0F1117</color>          <!-- deepest app bg -->
+    <color name="surface">#1A1D27</color>             <!-- cards, sheets -->
+    <color name="surface_secondary">#232636</color>   <!-- subtle insets, chips -->
+
+    <!-- Text on dark -->
+    <color name="text_primary">#F0F4F8</color>
+    <color name="text_secondary">#9BA3B8</color>
+    <color name="text_hint">#5A6272</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- Streak -->
+    <color name="streak_orange">#FB923C</color>
+    <color name="streak_orange_light">#2A1500</color>
+
+    <!-- XP -->
+    <color name="xp_yellow">#FBBF24</color>
+    <color name="xp_yellow_light">#1E1400</color>
+
+    <!-- Errors -->
+    <color name="goal_red">#F87171</color>
+    <color name="overspend_red_light">#2A0A0A</color>
+
+    <!-- Cards / borders -->
+    <color name="card_border">#2E3348</color>
+    <color name="divider">#1E2233</color>
+    <color name="divider_line">#2E3348</color>
+
+    <!-- Progress bars -->
+    <color name="progress_track">#2E3348</color>
+    <color name="progress_fill">#2D6A4F</color>
+    <color name="progress_over_budget">#F87171</color>
+
+    <!-- Bottom nav — dark surface, original svg colors stay via @null tint -->
+    <color name="nav_selected">#2D6A4F</color>
+    <color name="nav_unselected">#5A6272</color>
+    <color name="nav_background">#1A1D27</color>
+
+    <!-- Avatar -->
+    <color name="avatar_bg">#2D6A4F</color>
+
+    <!-- Chips -->
+    <color name="chip_selected_bg">#2D6A4F</color>
+    <color name="chip_unselected_bg">#232636</color>
+    <color name="chip_selected_text">#FFFFFF</color>
+    <color name="chip_unselected_text">#9BA3B8</color>
+
+    <!-- Buttons -->
+    <color name="btn_outline_border">#3A3F55</color>
+    <color name="btn_outline_text">#D0D6E8</color>
+
+    <!-- Notification tags — darkened tints -->
+    <color name="tag_alert_bg">#2A0A0A</color>
+    <color name="tag_alert_text">#F87171</color>
+    <color name="tag_nudge_bg">#0A1226</color>
+    <color name="tag_nudge_text">#93C5FD</color>
+    <color name="tag_insight_bg">#0A1F12</color>
+    <color name="tag_insight_text">#6EE7B7</color>
+
+    <!-- Miscellaneous -->
+    <color name="insight_bg">#0A1F12</color>
+    <color name="completed_goal_bg">#0A1F12</color>
+    <color name="notification_unread">#2D6A4F</color>
+    <color name="toggle_on">#2D6A4F</color>
+    <color name="score_good">#2D6A4F</color>
+    <color name="score_track">#2E3348</color>
+    <color name="level_badge_bg">#1E1400</color>
+</resources>

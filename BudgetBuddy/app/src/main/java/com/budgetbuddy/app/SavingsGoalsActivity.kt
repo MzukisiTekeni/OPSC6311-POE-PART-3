@@ -69,7 +69,8 @@ class GoalAdapter(
 
 class SavingsGoalsActivity : BaseThemedActivity() {
 
-    override fun themedBackgroundViewIds() = listOf(R.id.btn_add_goal)
+    override fun themedBackgroundViewIds() = emptyList<Int>()
+    override fun themedImageViewIds()      = listOf(R.id.btn_add_goal)
     override fun themedCardViewIds()       = listOf(R.id.card_summary)
 
 
