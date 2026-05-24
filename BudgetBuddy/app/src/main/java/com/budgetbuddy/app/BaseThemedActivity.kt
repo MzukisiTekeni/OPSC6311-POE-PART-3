@@ -126,6 +126,14 @@ abstract class BaseThemedActivity : AppCompatActivity() {
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
+    /**
+     * Returns an AlertDialog.Builder pre-styled with the app's surface colour
+     * so dialogs look correct in both light and dark mode.
+     */
+    fun themedDialogBuilder() = androidx.appcompat.app.AlertDialog.Builder(
+        this, R.style.Style_ThemedDialog
+    )
+
     private fun resolveColor(attr: Int, fallback: Int): Int {
         val ta = obtainStyledAttributes(intArrayOf(attr))
         val color = ta.getColor(0, fallback)

@@ -93,7 +93,7 @@ class MonthlyBudgetActivity : BaseThemedActivity() {
         val current = repo.loadOverallBudget(this, userId)
         if (current > 0) etAmt.setText(current.toBigDecimal().stripTrailingZeros().toPlainString())
 
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(this, R.style.Style_ThemedDialog)
             .setTitle("💰 Set Overall Monthly Budget")
             .setMessage("This is the total amount you plan to spend this month. It appears on your Dashboard.")
             .setView(view)
@@ -149,7 +149,7 @@ class MonthlyBudgetActivity : BaseThemedActivity() {
         val etAmt = view.findViewById<EditText>(R.id.et_dialog_amount)
         etAmt.setText(budget.amount.toBigDecimal().stripTrailingZeros().toPlainString())
 
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(this, R.style.Style_ThemedDialog)
             .setTitle("${budget.categoryEmoji} ${budget.categoryName}")
             .setMessage("Update the monthly budget limit for this category.")
             .setView(view)

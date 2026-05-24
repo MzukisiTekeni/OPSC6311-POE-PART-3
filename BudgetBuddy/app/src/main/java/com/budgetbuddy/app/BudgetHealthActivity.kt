@@ -43,9 +43,10 @@ class HealthRowAdapter(private val rows: MutableList<HealthRow>) :
         h.cat.text   = r.category
         h.spent.text = "R${"%,.0f".format(r.spent)} of R${"%,.0f".format(r.budget)}"
         h.pct.text   = "${r.pct}%"
-        h.pct.setTextColor(h.itemView.context.getColor(
-            if (r.isOver) R.color.goal_red else R.color.primary
-        ))
+        h.pct.setTextColor(
+            if (r.isOver) h.itemView.context.getColor(R.color.goal_red)
+            else ThemeManager.getPalette(h.itemView.context).primary
+        )
         h.bar.max      = 100
         h.bar.progress = r.pct.coerceAtMost(100)
         h.bar.progressDrawable = h.itemView.context.getDrawable(
@@ -67,7 +68,7 @@ class DonutScoreView @JvmOverloads constructor(
 
     private val paintTrack = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
         style  = android.graphics.Paint.Style.STROKE
-        color  = Color.parseColor("#E8EDF3")
+        // color set in init block (context-aware)
         strokeWidth = 0f   // set in onSizeChanged
     }
     private val paintArc = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
@@ -77,11 +78,20 @@ class DonutScoreView @JvmOverloads constructor(
     }
     private val paintText = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
         textAlign = android.graphics.Paint.Align.CENTER
-        color     = Color.parseColor("#1A1A2E")
+        // color set in init block (context-aware)
     }
     private val paintSub = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
         textAlign = android.graphics.Paint.Align.CENTER
-        color     = Color.parseColor("#6B7280")
+        // color set in init block (context-aware)
+    }
+
+    init {
+        val isDark = (context.resources.configuration.uiMode and
+            android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+            android.content.res.Configuration.UI_MODE_NIGHT_YES
+        paintTrack.color = if (isDark) 0xFF2E3348.toInt() else 0xFFE8EDF3.toInt()
+        paintText.color  = if (isDark) 0xFFF0F4F8.toInt() else 0xFF1A1A2E.toInt()
+        paintSub.color   = if (isDark) 0xFF9BA3B8.toInt() else 0xFF6B7280.toInt()
     }
 
     private val oval = android.graphics.RectF()

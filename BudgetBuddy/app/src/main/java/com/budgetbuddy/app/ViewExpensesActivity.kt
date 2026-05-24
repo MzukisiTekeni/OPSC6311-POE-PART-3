@@ -146,8 +146,6 @@ class ViewExpensesActivity : BaseThemedActivity() {
                 }
                 val primary = ThemeManager.getPalette(this).primary
                 findViewById<TextView>(id).apply {
-                    setBackgroundResource(R.drawable.bg_chip_selected)
-                    // Tint the chip background with the active theme colour
                     ThemeManager.tintBackground(this, primary)
                     setTextColor(getColor(R.color.text_on_primary))
                 }
@@ -166,10 +164,7 @@ class ViewExpensesActivity : BaseThemedActivity() {
 
         // Apply theme to the initially-selected chip (Monthly)
         val primary = ThemeManager.getPalette(this).primary
-        findViewById<TextView>(R.id.chip_monthly).apply {
-            setBackgroundResource(R.drawable.bg_chip_selected)
-            ThemeManager.tintBackground(this, primary)
-            setTextColor(getColor(R.color.text_on_primary))
-        }
+        ThemeManager.tintBackground(findViewById(R.id.chip_monthly), primary)
+        findViewById<TextView>(R.id.chip_monthly).setTextColor(getColor(R.color.text_on_primary))
     }
 }

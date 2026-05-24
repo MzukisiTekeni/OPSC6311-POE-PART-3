@@ -34,20 +34,37 @@ class SpendingBarChartView @JvmOverloads constructor(
         color = Color.parseColor("#EF4444"); style = Paint.Style.FILL
     }
     private val paintLabel = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#6B7280"); textAlign = Paint.Align.CENTER; textSize = 28f
+        // color set in setData() using context
+        textAlign = Paint.Align.CENTER; textSize = 28f
     }
     private val paintAmount = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#1A1A2E"); textAlign = Paint.Align.CENTER
+        // color set in setData() using context
+        textAlign = Paint.Align.CENTER
         textSize = 22f; typeface = Typeface.DEFAULT_BOLD
     }
     private val paintGrid = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#E5E7EB"); strokeWidth = 1f
+        // color set in setData() using context
+        strokeWidth = 1f
     }
     private val paintLegendBox = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
     }
 
-    fun setData(data: List<Bar>) { bars = data; invalidate() }
+    private var contextRef: android.content.Context? = null
+
+    fun setData(data: List<Bar>, ctx: android.content.Context? = null) {
+        bars = data
+        if (ctx != null) {
+            contextRef = ctx
+            val isDark = (ctx.resources.configuration.uiMode and
+                android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+                android.content.res.Configuration.UI_MODE_NIGHT_YES
+            paintAmount.color = if (isDark) 0xFFF0F4F8.toInt() else 0xFF1A1A2E.toInt()
+            paintLabel.color  = if (isDark) 0xFF9BA3B8.toInt() else 0xFF6B7280.toInt()
+            paintGrid.color   = if (isDark) 0xFF2E3348.toInt() else 0xFFE5E7EB.toInt()
+        }
+        invalidate()
+    }
 
     override fun onDraw(canvas: Canvas) {
         if (bars.isEmpty()) {
@@ -117,13 +134,13 @@ class SpendingBarChartView @JvmOverloads constructor(
         var lx          = (width - totalW) / 2f
 
         // Budget box + label
-        paintLegendBox.color = Color.parseColor("#E0E7FF")
+        paintLegendBox.color = paintBudget.color
         canvas.drawRoundRect(lx, legendY - boxSize, lx + boxSize, legendY, 3f, 3f, paintLegendBox)
         canvas.drawText("Budget", lx + boxSize + textGap, legendY, paintLabel)
         lx += boxSize + textGap + budgetTextW + legendGap
 
         // Spent box + label
-        paintLegendBox.color = Color.parseColor("#6366F1")
+        paintLegendBox.color = paintSpent.color
         canvas.drawRoundRect(lx, legendY - boxSize, lx + boxSize, legendY, 3f, 3f, paintLegendBox)
         canvas.drawText("Spent", lx + boxSize + textGap, legendY, paintLabel)
 
@@ -211,10 +228,11 @@ class StatisticsActivity : BaseThemedActivity() {
                         setTextColor(getColor(R.color.text_secondary))
                     }
                 }
+                val primary = ThemeManager.getPalette(this).primary
                 findViewById<TextView>(id).apply {
-                    setBackgroundResource(R.drawable.bg_chip_selected)
+                    ThemeManager.tintBackground(this, primary)
                     setTextColor(getColor(R.color.text_on_primary))
-                }.also { ThemeManager.tintBackground(it, ThemeManager.getPalette(this).primary) }
+                }
                 loadStatsFor(label)
             }
         }
@@ -374,9 +392,9 @@ class StatisticsActivity : BaseThemedActivity() {
                 findViewById<TextView>(R.id.tv_top_category).text   = topCategory
                 val vsTv = findViewById<TextView>(R.id.tv_vs_last_period)
                 vsTv.text = vsText
-                vsTv.setTextColor(getColor(if (vsLastPct <= 0) R.color.primary else R.color.goal_red))
+                vsTv.setTextColor(if (vsLastPct <= 0) ThemeManager.getPalette(this@StatisticsActivity).primary else getColor(R.color.goal_red))
                 insightAdapter.update(insights)
-                findViewById<SpendingBarChartView>(R.id.bar_chart).setData(finalBarData)
+                findViewById<SpendingBarChartView>(R.id.bar_chart).setData(finalBarData, this@StatisticsActivity)
             }
         }
     }

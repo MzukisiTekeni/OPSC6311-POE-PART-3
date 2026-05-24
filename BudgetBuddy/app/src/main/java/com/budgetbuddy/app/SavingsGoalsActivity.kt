@@ -134,7 +134,7 @@ class SavingsGoalsActivity : BaseThemedActivity() {
         tvInfo.text = "Saved so far: R${"%,.0f".format(goal.savedAmount)}\n" +
                       "Still needed: R${"%,.0f".format((goal.targetAmount - goal.savedAmount).coerceAtLeast(0.0))}"
 
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(this, R.style.Style_ThemedDialog)
             .setTitle("💰 ${goal.name}")
             .setView(view)
             .setPositiveButton("Confirm") { _, _ ->

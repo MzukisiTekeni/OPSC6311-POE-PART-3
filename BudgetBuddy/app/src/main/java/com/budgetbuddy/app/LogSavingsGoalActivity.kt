@@ -53,7 +53,8 @@ class LogSavingsGoalActivity : BaseThemedActivity() {
             ).forEach { (label, id) ->
                 val chip = findViewById<TextView>(id)
                 if (label == chosen) {
-                    chip.setBackgroundResource(R.drawable.bg_chip_selected)
+                    val primary = ThemeManager.getPalette(this).primary
+                    ThemeManager.tintBackground(chip, primary)
                     chip.setTextColor(getColor(R.color.text_on_primary))
                 } else {
                     chip.setBackgroundResource(R.drawable.bg_chip_unselected)

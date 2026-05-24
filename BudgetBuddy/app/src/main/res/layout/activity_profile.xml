@@ -190,14 +190,14 @@
 
                         <TextView android:id="@+id/tab_badges"
                             android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1"
-                            android:background="@drawable/bg_chip_unselected"
+                            android:background="@drawable/bg_tab_unselected"
                             android:text="@string/tab_badges" android:textSize="@dimen/text_sm"
                             android:textColor="@color/text_secondary" android:gravity="center"
                             android:clickable="true" android:focusable="true" />
 
                         <TextView android:id="@+id/tab_themes"
                             android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1"
-                            android:background="@drawable/bg_chip_unselected"
+                            android:background="@drawable/bg_tab_unselected"
                             android:text="@string/tab_themes" android:textSize="@dimen/text_sm"
                             android:textColor="@color/text_secondary" android:gravity="center"
                             android:clickable="true" android:focusable="true" />

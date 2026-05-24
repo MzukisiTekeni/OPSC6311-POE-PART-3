@@ -63,7 +63,8 @@ class NotifAdapter(
 
 class NotificationsActivity : BaseThemedActivity() {
 
-    override fun themedBackgroundViewIds() = listOf(R.id.btn_clear_all)
+    override fun themedBackgroundViewIds() = emptyList<Int>()
+    override fun themedTextViewIds()       = listOf(R.id.btn_clear_all)
 
 
     private lateinit var repo: BudgetRepository
@@ -71,6 +72,15 @@ class NotificationsActivity : BaseThemedActivity() {
     private var userId     = -1
     private var allNotifs  = listOf<NotificationEntity>()
     private var currentTag : String? = null
+
+    override fun onResume() {
+        super.onResume()
+        // Repaint selected tab whenever we return (theme may have changed)
+        if (::adapter.isInitialized) {
+            val selId = notifTabMap.entries.firstOrNull { it.value == currentTag }?.key ?: R.id.tab_all
+            paintTabs(selId)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,26 +138,35 @@ class NotificationsActivity : BaseThemedActivity() {
         }
     }
 
+    private val notifTabMap: Map<Int, String?> = mapOf(
+        R.id.tab_all      to null,
+        R.id.tab_alerts   to "ALERT",
+        R.id.tab_nudges   to "NUDGE",
+        R.id.tab_insights to "INSIGHT"
+    )
+
+    private fun paintTabs(selectedId: Int) {
+        val primary = ThemeManager.getPalette(this).primary
+        notifTabMap.keys.forEach { id ->
+            val tv = findViewById<TextView>(id) ?: return@forEach
+            if (id == selectedId) {
+                ThemeManager.tintBackground(tv, primary)
+                tv.setTextColor(getColor(R.color.text_on_primary))
+            } else {
+                tv.setBackgroundResource(R.drawable.bg_chip_unselected)
+                tv.setTextColor(getColor(R.color.text_secondary))
+            }
+        }
+    }
+
     private fun setupTabs() {
-        val tabs = mapOf(
-            R.id.tab_all      to null,
-            R.id.tab_alerts   to "ALERT",
-            R.id.tab_nudges   to "NUDGE",
-            R.id.tab_insights to "INSIGHT"
-        )
-        tabs.forEach { (id, tag) ->
+        // Paint initial state (All selected)
+        paintTabs(R.id.tab_all)
+
+        notifTabMap.forEach { (id, tag) ->
             findViewById<TextView>(id).setOnClickListener {
                 currentTag = tag
-                tabs.keys.forEach { cid ->
-                    findViewById<TextView>(cid).apply {
-                        setBackgroundResource(R.drawable.bg_chip_unselected)
-                        setTextColor(getColor(R.color.text_secondary))
-                    }
-                }
-                findViewById<TextView>(id).apply {
-                    setBackgroundResource(R.drawable.bg_chip_selected)
-                    setTextColor(getColor(R.color.text_on_primary))
-                }
+                paintTabs(id)
                 filterAndDisplay()
             }
         }

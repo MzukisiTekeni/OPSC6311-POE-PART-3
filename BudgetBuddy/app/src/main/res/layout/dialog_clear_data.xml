@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="Select the data you want to permanently delete:"
         android:textSize="13sp"
-        android:textColor="#6B7280"
+        android:textColor="@color/text_secondary"
         android:layout_marginBottom="16dp"
         android:lineSpacingMultiplier="1.3" />
 
@@ -25,7 +25,7 @@
         android:layout_marginBottom="4dp"
         android:text="💸  Expenses &amp; spending history"
         android:textSize="14sp"
-        android:textColor="#1A1A2E"
+        android:textColor="@color/text_primary"
         android:paddingStart="8dp" />
 
     <TextView
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:text="      Also clears Statistics graph and Budget Health"
         android:textSize="11sp"
-        android:textColor="#9CA3AF"
+        android:textColor="@color/text_hint"
         android:layout_marginBottom="12dp"
         android:layout_marginStart="8dp" />
 
@@ -45,7 +45,7 @@
         android:layout_marginBottom="12dp"
         android:text="📊  Category budgets"
         android:textSize="14sp"
-        android:textColor="#1A1A2E"
+        android:textColor="@color/text_primary"
         android:paddingStart="8dp" />
 
     <!-- Option 3 -->
@@ -56,7 +56,7 @@
         android:layout_marginBottom="12dp"
         android:text="🎯  Savings goals"
         android:textSize="14sp"
-        android:textColor="#1A1A2E"
+        android:textColor="@color/text_primary"
         android:paddingStart="8dp" />
 
     <!-- Option 4 -->
@@ -67,7 +67,7 @@
         android:layout_marginBottom="12dp"
         android:text="🔔  Notifications"
         android:textSize="14sp"
-        android:textColor="#1A1A2E"
+        android:textColor="@color/text_primary"
         android:paddingStart="8dp" />
 
     <!-- Option 5 -->
@@ -78,7 +78,7 @@
         android:layout_marginBottom="8dp"
         android:text="💰  Overall monthly budget amount"
         android:textSize="14sp"
-        android:textColor="#1A1A2E"
+        android:textColor="@color/text_primary"
         android:paddingStart="8dp" />
 
 </LinearLayout>

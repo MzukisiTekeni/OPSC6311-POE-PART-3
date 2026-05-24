@@ -10,6 +10,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@color/surface"
     android:padding="16dp">
 
     <TextView
@@ -28,6 +29,7 @@
         android:hint="0.00"
         android:textSize="24sp"
         android:textColor="@color/text_primary"
+        android:textColorHint="@color/text_hint"
         android:background="@drawable/bg_input_field"
         android:padding="12dp" />
 

@@ -365,7 +365,7 @@ class ProfileActivity : BaseThemedActivity() {
         val cbNotifications = view.findViewById<CheckBox>(R.id.cb_notifications)
         val cbOverall       = view.findViewById<CheckBox>(R.id.cb_overall_budget)
 
-        val dialog = AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this, R.style.Style_ThemedDialog)
             .setTitle("🗑️ Clear Data")
             .setView(view)
             .setPositiveButton("Delete Selected", null)
@@ -396,7 +396,7 @@ class ProfileActivity : BaseThemedActivity() {
                 ).filterIndexed { i, _ -> checked[i] }.joinToString(", ")
 
                 dialog.dismiss()
-                AlertDialog.Builder(this)
+                AlertDialog.Builder(this, R.style.Style_ThemedDialog)
                     .setTitle("Are you sure?")
                     .setMessage("You are about to permanently delete:\n\n$selectedLabels\n\nThis cannot be undone.")
                     .setPositiveButton("Yes, delete") { _, _ -> performClear(checked) }
