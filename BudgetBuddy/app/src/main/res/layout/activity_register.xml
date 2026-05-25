@@ -17,6 +17,21 @@
             android:layout_height="wrap_content" />
 
         <!-- Heading -->
+        <FrameLayout
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bg_quick_action">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/bb_logo_1_1"
+                android:contentDescription="BudgetBuddy logo" />
+        </FrameLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

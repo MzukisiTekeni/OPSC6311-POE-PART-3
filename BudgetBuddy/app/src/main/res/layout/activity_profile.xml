@@ -725,7 +725,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Earn XP to unlock more themes!"
                                 android:textSize="10sp"
-                                android:textColor="@color/primary_dark"
+                                android:textColor="@color/text_secondary"
                                 android:lineSpacingMultiplier="1.3" />
                         </LinearLayout>
                     </LinearLayout>
