@@ -17,7 +17,7 @@ class ProfileActivity : BaseThemedActivity() {
     private lateinit var repo: BudgetRepository
     private var userId = -1
 
-    // ── Theme XP thresholds ───────────────────────────────────────────────────
+    // ── Theme XP thresholds ──────────────────────
     private val THEME_XP_OCEAN     = 500
     private val THEME_XP_MIDNIGHT  = 2000
     private val THEME_XP_AMBER     = 3500
