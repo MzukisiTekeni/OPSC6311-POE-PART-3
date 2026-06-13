@@ -181,6 +181,7 @@
                 android:layout_marginBottom="@dimen/spacing_xs">
 
                 <TextView
+                    android:id="@+id/tv_bar_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/section_my_budget"
