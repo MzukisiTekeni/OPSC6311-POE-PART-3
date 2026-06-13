@@ -1,6 +1,6 @@
 # BudgetBuddy
 
-App's APK Files link: https://github.com/MzukisiTekeni/BudgetBuddy/releases
+App's APK Files link: https://github.com/MzukisiTekeni/OPSC6311-POE-PART-3/tree/main/APK
 
 YouTube video Link: https://youtu.be/TbAPwAgJmPM
 
