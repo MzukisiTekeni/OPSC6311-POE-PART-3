@@ -14,6 +14,10 @@ import kotlinx.coroutines.launch
 
 class ProfileActivity : BaseThemedActivity() {
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 1 — CONFIG & STATE
+       ═══════════════════════════════════════════════════════════════ */
+    // Repository setup, user identification, and XP threshold constants.
     private lateinit var repo: BudgetRepository
     private var userId = -1
 
@@ -82,6 +86,10 @@ class ProfileActivity : BaseThemedActivity() {
         }
 
         // ── Observe user data ─────────────────────────────────────────────────
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 2 — USER PROFILE DATA
+           ═══════════════════════════════════════════════════════════════ */
+        // Fetches and displays user stats, XP progress, and level information.
         repo.getLoggedInUser(userId).observe(this) { user ->
             user ?: return@observe
 
@@ -133,6 +141,10 @@ class ProfileActivity : BaseThemedActivity() {
         setEarnRow(R.id.row_complete_goal, "🎯", "Complete a savings goal", "+200 XP")
 
         // ── Tab switching ─────────────────────────────────────────────────────
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 3 — INTERACTIVE PANELS
+           ═══════════════════════════════════════════════════════════════ */
+        // Manages tab navigation between XP, Badges, and Themes views.
         selectTab("XP")
         findViewById<TextView>(R.id.tab_xp).setOnClickListener     { selectTab("XP") }
         findViewById<TextView>(R.id.tab_badges).setOnClickListener  { selectTab("Badges") }
@@ -145,6 +157,10 @@ class ProfileActivity : BaseThemedActivity() {
         }
 
         // ── Settings rows ─────────────────────────────────────────────────────
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 4 — ACCOUNT & SETTINGS
+           ═══════════════════════════════════════════════════════════════ */
+        // Configures app preferences, data clearing, and logout functionality.
         setSettingsRow(R.id.row_notifications, "Notifications", showToggle = true, toggleOn = true)
         setSettingsRow(R.id.row_currency, "Currency", value = "ZAR • R")
         setSettingsRow(R.id.row_privacy,  "Privacy") {

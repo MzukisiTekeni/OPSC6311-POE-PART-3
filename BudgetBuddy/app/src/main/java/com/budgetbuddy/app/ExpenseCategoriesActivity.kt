@@ -18,6 +18,10 @@ data class CategoryItem(val emoji: String, val name: String, var isSelected: Boo
 class CategoryAdapter(private val items: MutableList<CategoryItem>) :
     RecyclerView.Adapter<CategoryAdapter.VH>() {
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 1 — CATEGORY LIST ADAPTER
+       ═══════════════════════════════════════════════════════════════ */
+    // Manages selection of budget categories from a predefined list.
     inner class VH(view: View) : RecyclerView.ViewHolder(view) {
         val tvEmoji: TextView  = view.findViewById(R.id.tv_category_emoji)
         val tvName: TextView   = view.findViewById(R.id.tv_category_name)
@@ -47,6 +51,10 @@ class CategoryAdapter(private val items: MutableList<CategoryItem>) :
 
 class ExpenseCategoriesActivity : BaseThemedActivity() {
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 2 — CATEGORY SETUP
+       ═══════════════════════════════════════════════════════════════ */
+    // Initialises the user's category list with defaults or custom additions.
     override fun themedBackgroundViewIds() = listOf(R.id.btn_add_custom, R.id.btn_continue)
 
 

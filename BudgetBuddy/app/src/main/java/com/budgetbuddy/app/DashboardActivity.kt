@@ -7,6 +7,7 @@ import android.media.RingtoneManager
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
 import com.budgetbuddy.app.db.BadgeKeys
 import com.budgetbuddy.app.db.BudgetRepository
 import com.budgetbuddy.app.db.SessionManager
@@ -16,6 +17,10 @@ import java.time.format.DateTimeFormatter
 
 class DashboardActivity : BaseThemedActivity() {
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 1 — DATA BINDING & CONFIG
+       ═══════════════════════════════════════════════════════════════ */
+    // Initialises the repository and mappings for badges/themed views.
     private lateinit var repo: BudgetRepository
     private var prevUnreadCount = -1   // -1 = not yet initialised
 
@@ -51,10 +56,21 @@ class DashboardActivity : BaseThemedActivity() {
         setupBottomNav()
         setupClickListeners()
         observeLiveData()
+
+        // Handle back button to prevent accidental exit
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                moveTaskToBack(true)
+            }
+        })
         // applyCurrentTheme() is called automatically by onResume()
     }
 
     private fun observeLiveData() {
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 2 — DASHBOARD METRICS
+           ═══════════════════════════════════════════════════════════════ */
+        // Observes XP progress, budget status, and goals for real-time updates.
         val userId = SessionManager.getUserId(this)
         val month  = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"))
 
@@ -63,8 +79,12 @@ class DashboardActivity : BaseThemedActivity() {
             findViewById<TextView>(R.id.tv_avatar_initials).text = user.avatarInitials
             findViewById<TextView>(R.id.tv_streak_count).text    = user.dayStreak.toString()
             val xpToNext = ((user.level * 2000) - user.totalXp).coerceAtLeast(0)
-            findViewById<TextView>(R.id.tv_xp_count).text =
-                "${ "%,d".format(user.totalXp)} of ${user.level * 2000} XP"
+            
+            // Format XP count using resource string for better maintainability and translation
+            val xpMax = user.level * 2000
+            val formattedXp = "%,d".format(user.totalXp)
+            findViewById<TextView>(R.id.tv_xp_count).text = "$formattedXp of $xpMax XP"
+            
             findViewById<TextView>(R.id.tv_xp_hint).text =
                 "$xpToNext XP to unlock next theme"
             findViewById<ProgressBar>(R.id.progress_xp).apply {
@@ -74,22 +94,31 @@ class DashboardActivity : BaseThemedActivity() {
         }
 
         repo.getTotalBudget(userId, month).observe(this) { totalBudget ->
-            if (totalBudget != null && totalBudget > 0) {
-                findViewById<TextView>(R.id.tv_budget_amount).text =
-                    "R${"%,.2f".format(totalBudget)}"
-            }
+            val budget = totalBudget ?: 0.0
+            findViewById<TextView>(R.id.tv_budget_amount).text =
+                "R${"%,.2f".format(budget)}"
+        }
+
+        // Use distinct observers and combine state locally to avoid nested observer leaks
+        var currentSpent = 0.0
+        var currentBudget = 0.0
+
+        fun updateBudgetProgress() {
+            val remaining = (currentBudget - currentSpent).coerceAtLeast(0.0)
+            val pct       = if (currentBudget > 0) ((currentSpent / currentBudget) * 100).toInt().coerceIn(0, 100) else 0
+            findViewById<TextView>(R.id.tv_remaining).text    = "R${"%,.0f".format(remaining)} remaining"
+            findViewById<TextView>(R.id.tv_percent_used).text = "$pct% used"
+            findViewById<ProgressBar>(R.id.progress_budget).progress = pct
         }
 
         repo.getTotalSpentByMonth(userId, month).observe(this) { spent ->
-            val s = spent ?: 0.0
-            repo.getTotalBudget(userId, month).observe(this) { budget ->
-                val b         = budget ?: 0.0
-                val remaining = (b - s).coerceAtLeast(0.0)
-                val pct       = if (b > 0) ((s / b) * 100).toInt().coerceIn(0, 100) else 0
-                findViewById<TextView>(R.id.tv_remaining).text    = "R${"%,.0f".format(remaining)} remaining"
-                findViewById<TextView>(R.id.tv_percent_used).text = "$pct% used"
-                findViewById<ProgressBar>(R.id.progress_budget).progress = pct
-            }
+            currentSpent = spent ?: 0.0
+            updateBudgetProgress()
+        }
+
+        repo.getTotalBudget(userId, month).observe(this) { budget ->
+            currentBudget = budget ?: 0.0
+            updateBudgetProgress()
         }
 
         repo.getAllGoals(userId).observe(this) { goals ->
@@ -99,6 +128,10 @@ class DashboardActivity : BaseThemedActivity() {
         }
 
         // ── Notification badge count ─────────────────────────────────────────
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 3 — NOTIFICATIONS & FEEDBACK
+           ═══════════════════════════════════════════════════════════════ */
+        // Updates the unread count badge and triggers notification sound if needed.
         repo.countUnread(userId).observe(this) { count ->
             val badge = findViewById<TextView>(R.id.tv_notif_count)
             if (count > 0) {
@@ -133,6 +166,10 @@ class DashboardActivity : BaseThemedActivity() {
     }
 
     private fun setupBottomNav() {
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 4 — NAVIGATION & INTERACTION
+           ═══════════════════════════════════════════════════════════════ */
+        // Configures the bottom navigation bar and activity shortcuts.
         val nav = findViewById<BottomNavigationView>(R.id.bottom_nav)
         nav.selectedItemId = R.id.nav_home
         nav.setOnItemSelectedListener { item ->
@@ -163,6 +200,4 @@ class DashboardActivity : BaseThemedActivity() {
 
     private fun <T> start(cls: Class<T>) = startActivity(Intent(this, cls))
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() { moveTaskToBack(true) }
 }

@@ -14,6 +14,9 @@ import kotlinx.coroutines.launch
 
 class LoginActivity : BaseThemedActivity() {
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 1 — INITIALISATION
+       ═══════════════════════════════════════════════════════════════ */
     // Tag for logcat - I'm using the class name so I can filter logs easily
     private val TAG = "LoginActivity"
 
@@ -39,6 +42,10 @@ class LoginActivity : BaseThemedActivity() {
         }
 
         // Toggle the password between dots and plain text
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 2 — UI HELPERS
+           ═══════════════════════════════════════════════════════════════ */
+        // Handles password visibility toggling and navigation links
         findViewById<ImageView>(R.id.iv_toggle_password).setOnClickListener {
             passwordVisible = !passwordVisible
             Log.d(TAG, "Password visibility toggled - now visible: $passwordVisible")
@@ -56,6 +63,10 @@ class LoginActivity : BaseThemedActivity() {
         }
 
         // Main login button - validates fields then checks credentials in the DB
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 3 — AUTHENTICATION LOGIC
+           ═══════════════════════════════════════════════════════════════ */
+        // Validates credentials and manages the user session upon success
         findViewById<Button>(R.id.btn_log_in).setOnClickListener {
             val username = etUsername.text.toString().trim()
             val password = etPassword.text.toString()

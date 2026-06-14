@@ -25,6 +25,10 @@ class AddExpenseActivity : BaseThemedActivity() {
     override fun themedBackgroundViewIds() = listOf(R.id.btn_save_expense, R.id.btn_add_category)
     override fun themedSolidViewIds()      = listOf(R.id.v_header_divider)
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 1 — SETUP & STATE
+       ═══════════════════════════════════════════════════════════════ */
+    // Repository initialization and view state management
     private lateinit var repo: BudgetRepository
 
     // userId is loaded once from SessionManager - never changes mid-session
@@ -68,6 +72,10 @@ class AddExpenseActivity : BaseThemedActivity() {
         }
 
         // ── Categories ────────────────────────────────────────────────────────
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 2 — CATEGORY SELECTION
+           ═══════════════════════════════════════════════════════════════ */
+        // Handles loading categories and displaying the selection dropdown
         // Live data keeps this list fresh - if the user adds a new category it shows up
         repo.getActiveCategories(userId).observe(this) { cats ->
             categories = cats
@@ -139,6 +147,10 @@ class AddExpenseActivity : BaseThemedActivity() {
         findViewById<ImageView>(R.id.iv_dropdown).setOnClickListener(catClick)
 
         // ── Date picker ───────────────────────────────────────────────────────
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 3 — DATE PICKER
+           ═══════════════════════════════════════════════════════════════ */
+        // Opens the Android DatePickerDialog to select when the expense occurred
         val tvDate = findViewById<TextView>(R.id.tv_date)
         val dateCl = View.OnClickListener {
             val cal = Calendar.getInstance()
@@ -156,6 +168,10 @@ class AddExpenseActivity : BaseThemedActivity() {
         findViewById<ImageView>(R.id.iv_calendar).setOnClickListener(dateCl)
 
         // ── Receipt attachment ─────────────────────────────────────────────────
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 4 — RECEIPT MANAGEMENT
+           ═══════════════════════════════════════════════════════════════ */
+        // Handles picking and previewing receipt images
         // Tapping either the placeholder or the preview re-opens the picker
         findViewById<LinearLayout>(R.id.ll_receipt_upload).setOnClickListener {
             Log.d(TAG, "Receipt upload area tapped - opening image picker")
@@ -167,6 +183,10 @@ class AddExpenseActivity : BaseThemedActivity() {
         }
 
         // ── Action buttons ────────────────────────────────────────────────────
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 5 — ACTIONS
+           ═══════════════════════════════════════════════════════════════ */
+        // Save expense or navigate to category management
         findViewById<Button>(R.id.btn_save_expense).setOnClickListener {
             Log.d(TAG, "Save Expense button tapped")
             saveExpense()
@@ -177,6 +197,10 @@ class AddExpenseActivity : BaseThemedActivity() {
         }
     }
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 6 — SAVE LOGIC
+       ═══════════════════════════════════════════════════════════════ */
+    // Validates inputs and saves the expense to the database
     private fun saveExpense() {
         // Strip any currency symbols or formatting the user may have typed
         val amountStr = findViewById<EditText>(R.id.et_amount).text.toString()

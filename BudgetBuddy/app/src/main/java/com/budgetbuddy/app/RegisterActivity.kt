@@ -17,6 +17,10 @@ import kotlinx.coroutines.launch
 
 class RegisterActivity : BaseThemedActivity() {
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 1 — INITIALISATION
+       ═══════════════════════════════════════════════════════════════ */
+    // Tag for logcat and repository setup
     private val TAG = "RegisterActivity"
 
     private lateinit var repo: BudgetRepository
@@ -42,6 +46,10 @@ class RegisterActivity : BaseThemedActivity() {
         val etConfirm  = findViewById<android.widget.EditText>(R.id.et_confirm_password)
 
         // Toggle for the main password field
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 2 — UI HELPERS
+           ═══════════════════════════════════════════════════════════════ */
+        // Handles password visibility toggling and field interaction
         findViewById<ImageView>(R.id.iv_toggle_password).setOnClickListener {
             passwordVisible = !passwordVisible
             Log.d(TAG, "Password field visibility toggled: $passwordVisible")
@@ -62,6 +70,10 @@ class RegisterActivity : BaseThemedActivity() {
         }
 
         // Register button - validate everything before touching the database
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 3 — REGISTRATION LOGIC
+           ═══════════════════════════════════════════════════════════════ */
+        // Validates all input fields and creates a new user account if valid
         findViewById<Button>(R.id.btn_register).setOnClickListener {
             val username = findViewById<android.widget.EditText>(R.id.et_username).text.toString().trim()
             val email    = findViewById<android.widget.EditText>(R.id.et_email).text.toString().trim()

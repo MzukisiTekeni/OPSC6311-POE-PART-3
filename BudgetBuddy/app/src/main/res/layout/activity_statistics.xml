@@ -16,6 +16,10 @@
         android:paddingEnd="@dimen/screen_padding"
         android:paddingBottom="@dimen/spacing_base">
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECTION 1 — TIME PERIOD FILTERING
+             Navigation and filter chips to switch between day, week, month, etc.
+             ═══════════════════════════════════════════════════════════════ -->
         <include layout="@layout/component_simple_top_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -121,6 +125,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 SECTION 2 — SUMMARY METRICS
+                 At-a-glance totals and averages for the selected period.
+                 ═══════════════════════════════════════════════════════════════ -->
             <!-- Key stats 2×2 -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -228,6 +236,10 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 SECTION 3 — VISUAL ANALYSIS
+                 Custom bar chart showing spending distribution and goal alignment.
+                 ═══════════════════════════════════════════════════════════════ -->
             <!-- Bar chart card — category breakdown for all periods -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -273,6 +285,10 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 SECTION 4 — AI INSIGHTS
+                 Personalized spending trends and recommendations.
+                 ═══════════════════════════════════════════════════════════════ -->
             <!-- Insights -->
             <TextView
                 android:layout_width="wrap_content"

@@ -6,6 +6,10 @@ import android.os.Bundle
 import com.budgetbuddy.app.db.SessionManager
 
 class WelcomeActivity : BaseThemedActivity() {
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 1 — ONBOARDING ENTRY
+       ═══════════════════════════════════════════════════════════════ */
+    // Entry point for new users, providing options to register or log in.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

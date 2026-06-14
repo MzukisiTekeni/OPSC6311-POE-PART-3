@@ -13,6 +13,10 @@ import java.util.*
 
 class LogSavingsGoalActivity : BaseThemedActivity() {
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 1 — SETUP & STATE
+       ═══════════════════════════════════════════════════════════════ */
+    // Repository and configuration for new savings goals.
     override fun themedBackgroundViewIds() = listOf(R.id.btn_create_goal)
 
 
@@ -30,6 +34,10 @@ class LogSavingsGoalActivity : BaseThemedActivity() {
         findViewById<ImageView>(R.id.iv_back).setOnClickListener { finish() }
 
         // Date picker
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 2 — CONFIGURATION
+           ═══════════════════════════════════════════════════════════════ */
+        // Handles target date selection and contribution frequency choices.
         val tvDate = findViewById<TextView>(R.id.tv_target_date)
         val dateCl = android.view.View.OnClickListener {
             val cal = Calendar.getInstance()
@@ -68,6 +76,10 @@ class LogSavingsGoalActivity : BaseThemedActivity() {
         findViewById<TextView>(R.id.chip_custom).setOnClickListener  { selectChip("Custom") }
 
         // Create goal
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 3 — SAVING LOGIC
+           ═══════════════════════════════════════════════════════════════ */
+        // Validates all inputs and creates the savings goal in the database.
         findViewById<android.widget.Button>(R.id.btn_create_goal).setOnClickListener {
             val amountStr = findViewById<EditText>(R.id.et_goal_amount).text.toString()
                 .replace("R", "").replace(" ", "").trim()

@@ -22,6 +22,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 SECTION 1 — AMOUNT INPUT
+                 Large input field for entering the expense amount.
+                 ═══════════════════════════════════════════════════════════════ -->
             <!-- Amount card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -73,6 +77,10 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 SECTION 2 — DETAILS & CATEGORY
+                 Fields for description and expense category selection.
+                 ═══════════════════════════════════════════════════════════════ -->
             <!-- Description -->
             <TextView
                 android:layout_width="wrap_content"
@@ -124,6 +132,10 @@
                     app:layout_constraintBottom_toBottomOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 SECTION 3 — DATE & RECEIPT
+                 Controls for picking the date and attaching receipt images.
+                 ═══════════════════════════════════════════════════════════════ -->
             <!-- Date -->
             <TextView
                 android:layout_width="wrap_content"
@@ -283,6 +295,10 @@
                     app:layout_constraintBottom_toBottomOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 SECTION 4 — ACTIONS
+                 Save button and onboarding/setup shortcuts.
+                 ═══════════════════════════════════════════════════════════════ -->
             <!-- Save Expense button -->
             <Button
                 android:id="@+id/btn_save_expense"

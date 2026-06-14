@@ -21,6 +21,10 @@ class GoalAdapter(
     private val onAddContribution: (SavingsGoalEntity) -> Unit
 ) : RecyclerView.Adapter<GoalAdapter.VH>() {
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 1 — RECYCLERVIEW ADAPTER
+       ═══════════════════════════════════════════════════════════════ */
+    // Manages the display of individual savings goal cards and their progress.
     inner class VH(v: View) : RecyclerView.ViewHolder(v) {
         val name: TextView        = v.findViewById(R.id.tv_goal_name)
         val due: TextView         = v.findViewById(R.id.tv_goal_due)
@@ -69,6 +73,10 @@ class GoalAdapter(
 
 class SavingsGoalsActivity : BaseThemedActivity() {
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 2 — SAVINGS HOME
+       ═══════════════════════════════════════════════════════════════ */
+    // Main screen for tracking all active and completed savings goals.
     override fun themedBackgroundViewIds() = emptyList<Int>()
     override fun themedImageViewIds()      = listOf(R.id.btn_add_goal)
     override fun themedCardViewIds()       = listOf(R.id.card_summary)
@@ -126,6 +134,10 @@ class SavingsGoalsActivity : BaseThemedActivity() {
     }
 
     private fun showContributionDialog(goal: SavingsGoalEntity) {
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 3 — CONTRIBUTIONS
+           ═══════════════════════════════════════════════════════════════ */
+        // Handles adding or withdrawing funds from a specific goal.
         val view  = LayoutInflater.from(this).inflate(R.layout.dialog_contribution, null)
         val etAmt = view.findViewById<EditText>(R.id.et_contribution_amount)
         val tvInfo= view.findViewById<TextView>(R.id.tv_contribution_info)

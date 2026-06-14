@@ -16,6 +16,10 @@
         android:paddingEnd="@dimen/screen_padding"
         android:paddingBottom="@dimen/spacing_base">
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECTION 1 — TOP BAR & FILTERS
+             Navigation, bulk actions, and category-based notification filtering.
+             ═══════════════════════════════════════════════════════════════ -->
         <!-- Title row with Clear all -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -103,6 +107,10 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 2 — NOTIFICATION FEED
+         RecyclerView displaying time-ordered notification cards.
+         ═══════════════════════════════════════════════════════════════ -->
     <!-- Notifications list -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_notifications"

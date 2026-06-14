@@ -15,6 +15,10 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 // ── Bar Chart View ─────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 1 — CUSTOM CUSTOM CHART VIEW
+   ═══════════════════════════════════════════════════════════════ */
+// Custom bar chart rendering code to visualize spending vs budget goals
 class SpendingBarChartView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : View(context, attrs) {
@@ -217,6 +221,10 @@ class SpendingBarChartView @JvmOverloads constructor(
 }
 
 // ── Insight Adapter ───────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 2 — RECYCLERVIEW ADAPTER
+   ═══════════════════════════════════════════════════════════════ */
+// Adapter for displaying text-based insights in a list
 class InsightAdapter(private val items: MutableList<Pair<String, String>>) :
     RecyclerView.Adapter<InsightAdapter.VH>() {
 
@@ -240,6 +248,10 @@ class InsightAdapter(private val items: MutableList<Pair<String, String>>) :
 }
 
 // ── Activity ──────────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 3 — STATISTICS HOME
+   ═══════════════════════════════════════════════════════════════ */
+// Controls time period filtering and populates chart and insights from DB
 class StatisticsActivity : BaseThemedActivity() {
 
     override fun onResume() {

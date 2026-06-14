@@ -22,6 +22,10 @@ data class ExpenseGroup(
 class ExpenseGroupAdapter(private val groups: MutableList<ExpenseGroup>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 1 — GROUPED EXPENSE ADAPTER
+       ═══════════════════════════════════════════════════════════════ */
+    // Organises expenses into expandable category headers for a clean overview.
     private companion object { const val HEADER = 0; const val CHILD = 1 }
 
     data class Row(val group: ExpenseGroup, val item: ExpenseEntity? = null)
@@ -110,6 +114,10 @@ class ExpenseGroupAdapter(private val groups: MutableList<ExpenseGroup>) :
 
 class ViewExpensesActivity : BaseThemedActivity() {
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 2 — EXPENSE HISTORY HOME
+       ═══════════════════════════════════════════════════════════════ */
+    // Displays a detailed log of all expenses, filterable by time period.
     private lateinit var repo: BudgetRepository
     private lateinit var groupAdapter: ExpenseGroupAdapter
     private var currentMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"))

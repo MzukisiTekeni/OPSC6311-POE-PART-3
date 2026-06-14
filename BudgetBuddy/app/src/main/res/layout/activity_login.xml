@@ -12,6 +12,10 @@
         android:orientation="vertical"
         android:padding="@dimen/screen_padding">
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECTION 1 — BRANDING
+             App logo and name for identity.
+             ═══════════════════════════════════════════════════════════════ -->
         <!-- Back button -->
         <ImageView
             android:id="@+id/iv_back"
@@ -58,6 +62,10 @@
             android:fontFamily="sans-serif-medium"
             android:textStyle="bold" />
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECTION 2 — INPUT FIELDS
+             Credentials entry for login.
+             ═══════════════════════════════════════════════════════════════ -->
         <!-- Username -->
         <TextView
             android:layout_width="wrap_content"
@@ -122,6 +130,10 @@
                 app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECTION 3 — ACTIONS
+             Login execution and navigation to secondary flows.
+             ═══════════════════════════════════════════════════════════════ -->
         <!-- Forgot password -->
         <TextView
             android:id="@+id/tv_forgot_password"

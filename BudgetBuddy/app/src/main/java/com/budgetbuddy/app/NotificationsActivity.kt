@@ -17,6 +17,10 @@ class NotifAdapter(
     private val onRead: (NotificationEntity) -> Unit
 ) : RecyclerView.Adapter<NotifAdapter.VH>() {
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 1 — NOTIFICATION LIST ADAPTER
+       ═══════════════════════════════════════════════════════════════ */
+    // Renders various types of notifications (Alerts, Nudges, Insights) with distinct styles.
     inner class VH(v: View) : RecyclerView.ViewHolder(v) {
         val dot: View        = v.findViewById(R.id.v_unread_dot)
         val icon: TextView   = v.findViewById(R.id.tv_notif_icon)
@@ -63,6 +67,10 @@ class NotifAdapter(
 
 class NotificationsActivity : BaseThemedActivity() {
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 2 — NOTIFICATIONS HOME
+       ═══════════════════════════════════════════════════════════════ */
+    // Manages notification filtering, badge updates, and dismiss actions.
     override fun themedBackgroundViewIds() = emptyList<Int>()
     override fun themedTextViewIds()       = listOf(R.id.btn_clear_all)
 

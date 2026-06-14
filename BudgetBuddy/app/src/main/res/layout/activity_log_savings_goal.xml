@@ -12,6 +12,10 @@
         android:orientation="vertical"
         android:padding="@dimen/screen_padding">
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECTION 1 — TARGET SETTING
+             Input for the total savings amount and goal name.
+             ═══════════════════════════════════════════════════════════════ -->
         <include layout="@layout/component_simple_top_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -80,6 +84,10 @@
             android:inputType="text"
             android:imeOptions="actionNext" />
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECTION 2 — TIMELINE & FREQUENCY
+             Date selection and commitment frequency for the goal.
+             ═══════════════════════════════════════════════════════════════ -->
         <!-- Target date -->
         <TextView
             android:layout_width="wrap_content"
@@ -184,6 +192,10 @@
                 android:focusable="true" />
         </LinearLayout>
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECTION 3 — ACTIONS
+             Creation button and gamification rewards tip.
+             ═══════════════════════════════════════════════════════════════ -->
         <!-- XP tip -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

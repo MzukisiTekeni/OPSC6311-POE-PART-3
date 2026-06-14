@@ -16,6 +16,10 @@
         android:paddingEnd="@dimen/screen_padding"
         android:paddingBottom="@dimen/spacing_base">
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECTION 1 — PERIOD SELECTION
+             Navigation and time-based filtering for the expense history.
+             ═══════════════════════════════════════════════════════════════ -->
         <include layout="@layout/component_simple_top_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -127,6 +131,10 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 2 — EXPENSE HISTORY LIST
+         Expandable category groups containing detailed expense records.
+         ═══════════════════════════════════════════════════════════════ -->
     <!-- Expense list (expandable categories) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_expenses"
@@ -139,6 +147,10 @@
         android:paddingBottom="@dimen/spacing_sm"
         android:clipToPadding="false" />
 
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 3 — SPENDING SUMMARY
+         Aggregate total of all expenses shown in the current list.
+         ═══════════════════════════════════════════════════════════════ -->
     <!-- Total Spent footer -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

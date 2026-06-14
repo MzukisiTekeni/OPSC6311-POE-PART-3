@@ -11,6 +11,10 @@
         android:orientation="vertical"
         android:padding="@dimen/screen_padding">
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECTION 1 — BRANDING
+             Logo and welcome message for identity.
+             ═══════════════════════════════════════════════════════════════ -->
         <!-- Top bar -->
         <include layout="@layout/component_simple_top_bar"
             android:layout_width="match_parent"
@@ -42,6 +46,10 @@
             android:fontFamily="sans-serif-medium"
             android:textStyle="bold" />
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECTION 2 — REGISTRATION FIELDS
+             Input fields for user details and password.
+             ═══════════════════════════════════════════════════════════════ -->
         <!-- Username -->
         <TextView
             android:layout_width="wrap_content"
@@ -173,6 +181,10 @@
                 android:layout_marginEnd="@dimen/spacing_base"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECTION 3 — ACTIONS
+             Account creation and navigation to login.
+             ═══════════════════════════════════════════════════════════════ -->
         <!-- Register button -->
         <Button
             android:id="@+id/btn_register"

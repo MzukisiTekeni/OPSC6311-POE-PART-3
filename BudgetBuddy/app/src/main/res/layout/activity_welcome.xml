@@ -7,6 +7,10 @@
     android:gravity="center_horizontal"
     android:padding="@dimen/screen_padding">
 
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 1 — BRANDING & HERO
+         Logo and illustration to introduce the app experience.
+         ═══════════════════════════════════════════════════════════════ -->
     <!-- App logo -->
     <FrameLayout
         android:layout_width="100dp"
@@ -67,6 +71,10 @@
 
     <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
 
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 2 — ONBOARDING ACTIONS
+         Navigation buttons for starting registration or logging in.
+         ═══════════════════════════════════════════════════════════════ -->
     <!-- Get Started button -->
     <Button
         android:id="@+id/btn_get_started"

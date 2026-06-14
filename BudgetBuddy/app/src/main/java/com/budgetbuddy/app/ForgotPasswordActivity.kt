@@ -8,6 +8,10 @@ import com.budgetbuddy.app.db.BudgetRepository
 import kotlinx.coroutines.launch
 
 class ForgotPasswordActivity : BaseThemedActivity() {
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 1 — RECOVERY FLOW
+       ═══════════════════════════════════════════════════════════════ */
+    // Handles email-based account recovery and verification.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forgot_password)

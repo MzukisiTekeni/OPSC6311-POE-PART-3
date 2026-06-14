@@ -14,6 +14,10 @@ import java.time.format.DateTimeFormatter
 
 class LogBudgetActivity : BaseThemedActivity() {
 
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 1 — SETUP & CONFIG
+       ═══════════════════════════════════════════════════════════════ */
+    // Repository and state management for category-specific budgeting.
     override fun themedBackgroundViewIds() = listOf(R.id.btn_save_budget, R.id.btn_add_category)
     override fun themedSolidViewIds()      = listOf(R.id.v_header_divider)
 
@@ -34,6 +38,10 @@ class LogBudgetActivity : BaseThemedActivity() {
         findViewById<ImageView>(R.id.iv_back).setOnClickListener { finish() }
 
         // Load categories
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION 2 — SELECTION & SAVE
+           ═══════════════════════════════════════════════════════════════ */
+        // Handles category selection and persisting budget limits to the database.
         repo.getActiveCategories(userId).observe(this) { cats -> categories = cats }
 
         val tvCat = findViewById<TextView>(R.id.tv_budget_category)

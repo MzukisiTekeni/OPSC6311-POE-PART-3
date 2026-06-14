@@ -36,6 +36,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 SECTION 1 — USER IDENTITY
+                 Displays the user avatar, name, and membership status.
+                 ═══════════════════════════════════════════════════════════════ -->
             <!-- User info row -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -159,6 +163,10 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 SECTION 2 — GAMIFICATION & PROGRESS
+                 Interactive panels for XP tracking, Badges, and Theme selection.
+                 ═══════════════════════════════════════════════════════════════ -->
             <!-- XP / Badges / Themes tabs card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -733,6 +741,10 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 SECTION 3 — SETTINGS & ACCOUNT
+                 App configuration, data management, and logout options.
+                 ═══════════════════════════════════════════════════════════════ -->
             <!-- Settings card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"

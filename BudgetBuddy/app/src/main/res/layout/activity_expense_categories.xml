@@ -21,6 +21,10 @@
         android:paddingTop="@dimen/spacing_sm"
         android:paddingBottom="@dimen/spacing_sm">
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECTION 1 — HEADER & GUIDANCE
+             Screen title and instructions for selecting categories.
+             ═══════════════════════════════════════════════════════════════ -->
         <include layout="@layout/component_simple_top_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -34,6 +38,10 @@
             android:textColor="@color/text_secondary" />
     </LinearLayout>
 
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 2 — CATEGORY LIST
+         Checklist of available spending categories.
+         ═══════════════════════════════════════════════════════════════ -->
     <!-- Category list -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_categories"
@@ -46,6 +54,10 @@
         android:paddingBottom="@dimen/spacing_sm"
         android:clipToPadding="false" />
 
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 3 — CUSTOM ADDITION
+         Input field for adding personalized categories.
+         ═══════════════════════════════════════════════════════════════ -->
     <!-- "Other" custom category row -->
     <androidx.cardview.widget.CardView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -107,6 +119,10 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 4 — FINALISATION
+         Confirms selection and proceeds to the dashboard.
+         ═══════════════════════════════════════════════════════════════ -->
     <!-- Continue button -->
     <Button
         android:id="@+id/btn_continue"

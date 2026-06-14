@@ -13,6 +13,10 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 // ── Adapter ───────────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 1 — CATEGORY BREAKDOWN ADAPTER
+   ═══════════════════════════════════════════════════════════════ */
+// Adapter for displaying health metrics per category (spent vs budget)
 class HealthRowAdapter(private val rows: MutableList<HealthRow>) :
     RecyclerView.Adapter<HealthRowAdapter.VH>() {
 
@@ -58,6 +62,10 @@ class HealthRowAdapter(private val rows: MutableList<HealthRow>) :
 }
 
 // ── Circular Ring View ────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 2 — CUSTOM HEALTH GAUGES
+   ═══════════════════════════════════════════════════════════════ */
+// Custom donut and gauge views for visualising health scores and spending zones
 class DonutScoreView @JvmOverloads constructor(
     context: android.content.Context,
     attrs: android.util.AttributeSet? = null
@@ -268,6 +276,10 @@ class GoalZoneGaugeView @JvmOverloads constructor(
 }
 
 // ── Activity ──────────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 3 — BUDGET HEALTH HOME
+   ═══════════════════════════════════════════════════════════════ */
+// Aggregates spending data to calculate a 0-100 health score
 class BudgetHealthActivity : BaseThemedActivity() {
 
     override fun themedTextViewIds() = listOf(R.id.tv_health_label)

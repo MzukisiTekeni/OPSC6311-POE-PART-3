@@ -30,6 +30,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 SECTION 1 — OVERALL HEALTH SCORE
+                 Visual donut chart and high-level stats for budget performance.
+                 ═══════════════════════════════════════════════════════════════ -->
             <!-- Score card with custom donut ring -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -116,8 +120,8 @@
             </androidx.cardview.widget.CardView>
 
             <!-- ═══════════════════════════════════════════════════════════
-                 GOAL ZONE GAUGE CARD (new — fulfils the requirement to show
-                 how well the user is staying between min and max goals)
+                 SECTION 2 — GOAL ZONE GAUGE
+                 Visual representation of spending relative to min/max goals.
                  ═══════════════════════════════════════════════════════════ -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -226,6 +230,10 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 SECTION 3 — CATEGORY ANALYSIS
+                 Detailed breakdown of health metrics for each budget category.
+                 ═══════════════════════════════════════════════════════════════ -->
             <!-- Category breakdown card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -259,6 +267,10 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 SECTION 4 — ACTIONABLE SUMMARY
+                 Textual summary of overspending and recommended actions.
+                 ═══════════════════════════════════════════════════════════════ -->
             <!-- Overspending summary card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
