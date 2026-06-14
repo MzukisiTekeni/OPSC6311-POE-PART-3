@@ -4,6 +4,8 @@ App's APK Files link: https://github.com/MzukisiTekeni/OPSC6311-POE-PART-3/tree/
 
 YouTube video Link: https://youtu.be/TbAPwAgJmPM
 
+Final Assets Images: https://github.com/MzukisiTekeni/OPSC6311-POE-PART-3/tree/main/BudgetBuddy_Assets_PNG/BudgetBuddy_Assets
+
 App Name: BudgetBuddy
 An android application designed to help users to take control of their personal finances. It allows users to
 track daily expenses, set monthly budgets, monitor savings goals and gain insight into their spending
