@@ -2,7 +2,7 @@
 
 App's APK Files link: https://github.com/MzukisiTekeni/OPSC6311-POE-PART-3/tree/main/APK
 
-YouTube video Link: https://youtu.be/hpKLeE_xsAo
+YouTube video Link: https://youtu.be/H-BS9KkxRUg
 
 Final Assets Images: https://github.com/MzukisiTekeni/OPSC6311-POE-PART-3/tree/main/BudgetBuddy_Assets_PNG/BudgetBuddy_Assets
 
